@@ -1,4 +1,6 @@
 import os
+
+import cv2
 import numpy as np
 import cv2 as cv
 import gc
@@ -43,8 +45,9 @@ class VideoManager:
         pieces = frames[:, left:right, lower:upper]
         self.save_rest(frame_start, frame_end)
         results = self.model.interpolate(pieces, right - left, upper - lower, frames_to_create)
-        # TODO unite with rest of data
-        return results
+        frames[:, left:right, lower:upper] = 0
+        frames[:-1, left:right, lower:upper]  += results
+        return frames[:-1,:,:,:]
 
     def save_rest(self, frame_start, frame_end):
         initial = self.video[0:frame_start]
