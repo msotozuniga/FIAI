@@ -1,0 +1,8 @@
+numpy>=1.16
+psutil~=5.8.0
+opencv-python>=4.1.2
+tqdm>=4.35.0
+sk-video>=1.1.10
+torch==1.6.0
+moviepy>=1.0.3
+torchvision==0.7.0
