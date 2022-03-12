@@ -38,6 +38,7 @@ class VideoManager:
 
     def generate_frames(self, lower_left, upper_right, frame_start, frame_end, frames_to_create):
         frames = self.video[frame_start: frame_end]
+        original = frames.copy()
         left = lower_left[0]
         right = upper_right[0]
         lower = lower_left[1]
@@ -46,8 +47,8 @@ class VideoManager:
         self.save_rest(frame_start, frame_end)
         results = self.model.interpolate(pieces, right - left, upper - lower, frames_to_create)
         frames[:, left:right, lower:upper] = 0
-        frames[:-1, left:right, lower:upper]  += results
-        return frames[:-1,:,:,:]
+        frames[1:, left:right, lower:upper]  += results
+        return frames[1:,:,:,:], original[1:,:,:,:]
 
     def save_rest(self, frame_start, frame_end):
         initial = self.video[0:frame_start]
