@@ -2,7 +2,7 @@ import os
 
 import cv2
 import numpy as np
-import cv2 as cv
+import cv2 as cv #cambiar de cv a pims
 import gc
 from deep.RIFE.RIFEWrapper import RIFEWrapper
 
@@ -15,8 +15,8 @@ class VideoManager:
         self.path_initial = dir_path + '\\temp\\initial.npy'
         self.path_final = dir_path + '\\temp\\final.npy'
         self.video = None
+        self.extractor = None
         self.stitcher = None
-        self.residue = None
 
     def open_video(self, video):
         '''
@@ -51,11 +51,12 @@ class VideoManager:
         return frames[1:,:,:,:], original[1:,:,:,:]
 
     def save_rest(self, frame_start, frame_end):
+        #Usar un compressor
         initial = self.video[0:frame_start]
         final = self.video[frame_end + 1:-1]
         with open(self.path_initial, 'wb') as f:
-            np.save(f, initial)
+            np.savez_compressed(f, initial)
         with open(self.path_final, 'wb') as f:
-            np.save(f, final)
+            np.savez_compressed(f, final)
         del self.video
         gc.collect()
