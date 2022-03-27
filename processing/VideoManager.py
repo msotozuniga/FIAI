@@ -5,6 +5,8 @@ import numpy as np
 import cv2 as cv #cambiar de cv a pims
 import gc
 from deep.RIFE.RIFEWrapper import RIFEWrapper
+from Extractor import Extractor
+from Stitcher import Stitcher
 
 
 class VideoManager:
@@ -14,41 +16,38 @@ class VideoManager:
         dir_path = os.path.dirname(os.path.realpath(__file__))
         self.path_initial = dir_path + '\\temp\\initial.npy'
         self.path_final = dir_path + '\\temp\\final.npy'
-        self.video = None
-        self.extractor = None
-        self.stitcher = None
+        self.extractor = Extractor()
+        self.capturer = None
+        self.stitcher = Stitcher()
+        self.fps = None
+        self.frame_count = None
 
     def open_video(self, video):
         '''
-        Loads video in memory
+        Set the video to work on
         :param video: Video path
         '''
         cap = cv.VideoCapture(video)
-        ret, frame = cap.read()
-
-        frames = []
-        while cap.isOpened():
-            ret, frame = cap.read()
-            if not ret:
-                break
-            frames.append(frame)
-        cap.release()
-        cv.destroyAllWindows()
-        self.video = np.stack(frames)
+        self.capturer = cap
+        self.fps = cap.get(cv2.CAP_PROP_FPS)
+        self.frame_count = cap.get(cv2.CAP_PROP_FRAME_COUNT)
 
     def generate_frames(self, lower_left, upper_right, frame_start, frame_end, frames_to_create):
+        '''
         frames = self.video[frame_start: frame_end]
         original = frames.copy()
+        '''
         left = lower_left[0]
         right = upper_right[0]
         lower = lower_left[1]
         upper = upper_right[1]
-        pieces = frames[:, left:right, lower:upper]
-        self.save_rest(frame_start, frame_end)
-        results = self.model.interpolate(pieces, right - left, upper - lower, frames_to_create)
-        frames[:, left:right, lower:upper] = 0
-        frames[1:, left:right, lower:upper]  += results
-        return frames[1:,:,:,:], original[1:,:,:,:]
+
+        pieces , frames = self.extractor.extract_frames(self.capturer, left,right,lower,upper, frame_start, frame_end)
+        self.stitcher.save_frames(frames)
+        interpolation = self.model.interpolate(pieces, right - left, upper - lower, frames_to_create)
+        results, original= self.stitcher.stitch(interpolation,left,right,lower,upper)
+        return results, original
+
 
     def save_rest(self, frame_start, frame_end):
         #Usar un compressor
