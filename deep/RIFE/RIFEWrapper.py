@@ -89,11 +89,9 @@ class RIFEWrapper(ModelWrapperInterface):
     def load_model(self):
         self.model.load_model(r"C:\Users\matia\Documents\Universidad\T-Titulo\Project\deep\RIFE",-1)
 
-    def train(self, dataset):
-        pass
 
     def to_device(self, device):
-        pass
+        self.model.to(device)
 
     def interpolate(self, frames, h, w, intermediates_frames):
         frames = frames[:, :, :, ::-1]  # Se intercambia el orden de canales

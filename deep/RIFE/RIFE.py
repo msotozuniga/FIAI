@@ -10,7 +10,7 @@ from deep.RIFE.IFNet import *
 import torch.nn.functional as F
 from deep.RIFE.loss import *
 
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+#device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     
 class Model:
     def __init__(self, device_system = 'cpu',local_rank=-1):
@@ -31,7 +31,7 @@ class Model:
     def eval(self):
         self.flownet.eval()
 
-    def device(self):
+    def device(self, device = "cpu"):
         self.flownet.to(device)
 
     def load_model(self, path, rank=0):
