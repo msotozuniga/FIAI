@@ -152,3 +152,6 @@ fabric.properties
 
 # Temporal files
 processing/temp/
+
+# VsCode
+.vscode
