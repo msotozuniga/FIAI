@@ -1,26 +1,16 @@
 import torch
 import torch.nn as nn
 import numpy as np
-from torch.optim import AdamW
 import torch.optim as optim
 import itertools
-from deep.RIFE.warplayer import warp
-from torch.nn.parallel import DistributedDataParallel as DDP
+from .warplayer import warp
 import torch.nn.functional as F
-
-device = torch.device("cuda")
 
 def conv(in_planes, out_planes, kernel_size=3, stride=1, padding=1, dilation=1):
     return nn.Sequential(
         nn.Conv2d(in_planes, out_planes, kernel_size=kernel_size, stride=stride,
                   padding=padding, dilation=dilation, bias=True),
         nn.PReLU(out_planes)
-        )
-
-def conv_woact(in_planes, out_planes, kernel_size=3, stride=1, padding=1, dilation=1):
-    return nn.Sequential(
-        nn.Conv2d(in_planes, out_planes, kernel_size=kernel_size, stride=stride,
-                  padding=padding, dilation=dilation, bias=True),
         )
 
 def deconv(in_planes, out_planes, kernel_size=4, stride=2, padding=1):
@@ -42,26 +32,27 @@ class Conv2(nn.Module):
     
 c = 16
 class Contextnet(nn.Module):
-    def __init__(self):
+    def __init__(self, device):
         super(Contextnet, self).__init__()
         self.conv1 = Conv2(3, c)
         self.conv2 = Conv2(c, 2*c)
         self.conv3 = Conv2(2*c, 4*c)
         self.conv4 = Conv2(4*c, 8*c)
+        self.gpu = device
     
     def forward(self, x, flow):
         x = self.conv1(x)
         flow = F.interpolate(flow, scale_factor=0.5, mode="bilinear", align_corners=False) * 0.5
-        f1 = warp(x, flow)        
+        f1 = warp(x, flow, self.gpu)        
         x = self.conv2(x)
         flow = F.interpolate(flow, scale_factor=0.5, mode="bilinear", align_corners=False) * 0.5
-        f2 = warp(x, flow)
+        f2 = warp(x, flow, self.gpu)
         x = self.conv3(x)
         flow = F.interpolate(flow, scale_factor=0.5, mode="bilinear", align_corners=False) * 0.5
-        f3 = warp(x, flow)
+        f3 = warp(x, flow, self.gpu)
         x = self.conv4(x)
         flow = F.interpolate(flow, scale_factor=0.5, mode="bilinear", align_corners=False) * 0.5
-        f4 = warp(x, flow)
+        f4 = warp(x, flow, self.gpu)
         return [f1, f2, f3, f4]
     
 class Unet(nn.Module):

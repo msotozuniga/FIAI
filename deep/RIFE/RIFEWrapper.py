@@ -95,7 +95,7 @@ class RIFEWrapper(ModelWrapperInterface):
 
     def interpolate(self, frames, h, w, intermediates_frames):
         frames = frames[:, :, :, ::-1]  # Se intercambia el orden de canales
-        tmp = 128
+        tmp = 32
         ph = ((h - 1) // tmp + 1) * tmp
         pw = ((w - 1) // tmp + 1) * tmp
         padding = (0, pw - w, 0, ph - h)
@@ -125,12 +125,15 @@ class RIFEWrapper(ModelWrapperInterface):
         return set
 
     def make_inference(self, I0, I1, n):
-        res = []
-        for i in range(n):
-            thing = self.model.inference(I0, I1, (i + 1) * 1. / (n + 1))
-            mod = (((thing[0] * 255.).byte().cpu().numpy().transpose(1, 2, 0)))
-            res.append(mod)
-        return res
+        middle = self.model.inference(I0, I1)
+        if n == 1:
+            return [(((middle[0] * 255.).byte().cpu().numpy().transpose(1, 2, 0)))]
+        first_half = self.make_inference(I0, middle, n=n//2)
+        second_half = self.make_inference(middle, I1, n=n//2)
+        if n%2:
+            return [*first_half, middle, *second_half]
+        else:
+            return [*first_half, *second_half]
 
 
 
