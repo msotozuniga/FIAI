@@ -16,7 +16,7 @@ from .tenv import device
 
     
 class Model:
-    def __init__(self, local_rank=-1, arbitrary=False, fine_tune = False):
+    def __init__(self, local_rank=-1, arbitrary=False, fine_tune = False, device_system = 'cpu'):
         if arbitrary == True:
             self.flownet = IFNet_m()
         else:

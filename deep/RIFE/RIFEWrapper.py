@@ -93,6 +93,7 @@ class RIFEWrapper(ModelWrapperInterface):
     def to_device(self, device):
         self.model.to(device)
 
+    #TODO arreglar para que se añada las imagenes originales
     def interpolate(self, frames, h, w, intermediates_frames):
         frames = frames[:, :, :, ::-1]  # Se intercambia el orden de canales
         tmp = 32
