@@ -4,23 +4,18 @@ import numpy as np
 from torch.optim import AdamW, Adam
 import torch.optim as optim
 import itertools
-from model.warplayer import warp
+from deep.RIFE.warplayer import warp
 from torch.nn.parallel import DistributedDataParallel as DDP
-from model.IFNet import *
-from model.IFNet_m import *
+from deep.RIFE.IFNet import *
 import torch.nn.functional as F
-from model.loss import *
-from model.laplacian import *
-from model.refine import *
-from .tenv import device
+from deep.RIFE.loss import *
+from deep.RIFE.laplacian import *
+from deep.RIFE.refine import *
 
     
 class Model:
     def __init__(self, local_rank=-1, arbitrary=False, fine_tune = False, device_system = 'cpu'):
-        if arbitrary == True:
-            self.flownet = IFNet_m()
-        else:
-            self.flownet = IFNet()
+        self.flownet = IFNet()
         self.device()
         if fine_tune:
             self.optimG = Adam(self.flownet.parameters(), lr=1e-6)
@@ -28,7 +23,7 @@ class Model:
             self.optimG = AdamW(self.flownet.parameters(), lr=1e-6, weight_decay=1e-2) # use large weight decay may avoid NaN loss
         self.epe = EPE()
         self.lap = LapLoss()
-        self.sobel = SOBEL()
+        self.device_system = device_system
 
     def train(self):
         self.flownet.train()
@@ -37,7 +32,7 @@ class Model:
         self.flownet.eval()
 
     def device(self):
-        self.flownet.to(device)
+        self.flownet.to(self.device_system)
 
     def load_model(self, path, rank=0, m = True):
         def convert(param):
@@ -48,9 +43,9 @@ class Model:
             }
             
         if rank <= 0 and m == True:
-            self.flownet.load_state_dict(convert(torch.load('{}/flownet.pkl'.format(path),map_location=device)))
+            self.flownet.load_state_dict(convert(torch.load('{}/flownet.pkl'.format(path),map_location=self.device_system)))
         else:
-            self.flownet.load_state_dict(torch.load('{}/flownet.pkl'.format(path),map_location=device))
+            self.flownet.load_state_dict(torch.load('{}/flownet.pkl'.format(path),map_location=self.device_system))
         
     def save_model(self, path, rank=0):
         if rank == 0:
