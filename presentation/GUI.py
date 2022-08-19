@@ -67,7 +67,7 @@ class Mainwindow(QMainWindow):
         open_action = QAction("Abrir archivo", self)
         open_action.triggered.connect(self.openFile)
         save_action = QAction("guardar archivo", self)
-        save_action.triggered.connect(self.saveFile)
+        save_action.triggered.connect(self.sendFileSavedSignal)
         close_action = QAction("Cerrar archivo", self)
         close_action.triggered.connect(self.close)
         file_menu.addAction(open_action)
@@ -77,11 +77,12 @@ class Mainwindow(QMainWindow):
         
 
     def openFile(self):
-        fileName = QFileDialog.getOpenFileName(self,"Open File","/home",
+        file_name = QFileDialog.getOpenFileName(self,"Open File","/home",
                                        "Video (*.avi *.mp4)")
-        self.send_file_opened_signal(filename)
+        if file_name[0] != '':
+            self.sendFileOpenedSignal(file_name[0])
 
-    def sendFileOpenedSignal(self, filename):
+    def sendFileOpenedSignal(self, file_name):
         #TODO
         pass
         
