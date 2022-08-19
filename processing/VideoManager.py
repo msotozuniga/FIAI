@@ -5,6 +5,7 @@ import numpy as np
 import cv2 as cv #cambiar de cv a pims
 import gc
 from deep.RIFE.RIFEWrapper import RIFEWrapper
+from deep.SoftSplat.SoftSplatWrapper import SoftSplatWrapper
 from Extractor import Extractor
 from Stitcher import Stitcher
 
@@ -21,6 +22,14 @@ class VideoManager:
         self.stitcher = Stitcher()
         self.fps = None
         self.frame_count = None
+    
+    def change_model(self, model_id):
+        device= self.model.device_system
+        if model_id is 0:
+            self.model =RIFEWrapper(device_system=device)
+        elif model_id is 1:
+            self.model = Soft
+        
 
     def open_video(self, video):
         '''

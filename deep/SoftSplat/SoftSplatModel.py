@@ -80,6 +80,10 @@ class SoftSplatBaseline(nn.Module):
         self.alpha = nn.Parameter(torch.randn(1))
         self.device_system = device
 
+    def to(self,device):
+        super.to(device)
+        self.device_system = device
+
     def forward(self, x, target_t):
         x = preprocess(x)
         b = x.shape[0]

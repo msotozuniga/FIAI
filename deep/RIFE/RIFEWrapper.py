@@ -82,12 +82,12 @@ class RIFEWrapper(ModelWrapperInterface):
 
     def __init__(self, device_system='cpu'):
         self.model = Model(device_system)
-        self.load_model()
-        self.model.eval()
+        super().__init__(device_system=device_system)
 
 
     def load_model(self):
-        self.model.load_model(r"C:\Users\matia\Documents\Universidad\T-Titulo\Project\deep\RIFE",-1)
+        path = r"C:\Users\matia\Documents\Universidad\T-Titulo\Project\deep\RIFE"
+        self.model.load_model(path,-1,False)
 
 
     def to_device(self, device):

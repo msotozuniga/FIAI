@@ -34,6 +34,9 @@ class Model:
     def device(self):
         self.flownet.to(self.device_system)
 
+    def to(self,device):
+        self.flownet.to(device)
+
     def load_model(self, path, rank=0, m = True):
         def convert(param):
             return {
