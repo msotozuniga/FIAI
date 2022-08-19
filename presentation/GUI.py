@@ -1,3 +1,4 @@
+from fileinput import filename
 import sys
 from PySide2.QtCore import *
 from PySide2.QtGui import *
@@ -76,11 +77,17 @@ class Mainwindow(QMainWindow):
         
 
     def openFile(self):
-        print("opening file")
-        return
+        fileName = QFileDialog.getOpenFileName(self,"Open File","/home",
+                                       "Video (*.avi *.mp4)")
+        self.send_file_opened_signal(filename)
+
+    def sendFileOpenedSignal(self, filename):
+        #TODO
+        pass
+        
     
-    def saveFile(self):
-        print("Saving files")
+    def sendFileSavedSignal(self):
+        #TODO
         return
     
     def closeFile(self):
