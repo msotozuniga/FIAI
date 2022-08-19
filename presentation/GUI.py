@@ -53,22 +53,27 @@ class Mainwindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("FIAI")
-        self.menu = self.menuBar()
+        widget = QWidget()
+        self.setCentralWidget(widget)
         self.createMenu()
+
         self.setMinimumSize(720, 480)
         self.setMaximumSize(1920,1080)
 
     def createMenu(self):
+        self.menu = self.menuBar()
         file_menu = self.menu.addMenu("&Archivo")
         open_action = QAction("Abrir archivo", self)
-        open_action.triggered.connect(self.openFile())
+        open_action.triggered.connect(self.openFile)
         save_action = QAction("guardar archivo", self)
-        save_action.triggered.connect(self.saveFile())
+        save_action.triggered.connect(self.saveFile)
         close_action = QAction("Cerrar archivo", self)
-        close_action.triggered.connect(self.closeFile())
+        close_action.triggered.connect(self.close)
         file_menu.addAction(open_action)
         file_menu.addAction(save_action)
         file_menu.addAction(close_action)
+        self.setMenuBar(self.menu)
+        
 
     def openFile(self):
         print("opening file")
@@ -80,6 +85,7 @@ class Mainwindow(QMainWindow):
     
     def closeFile(self):
         print("Closing files")
+        self.closeEvent(QCloseEvent())
         return
 
 app = QApplication(sys.argv)
