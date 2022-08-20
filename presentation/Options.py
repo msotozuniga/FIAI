@@ -1,4 +1,4 @@
-from PySide2.QtWidgets import QWidget,QHBoxLayout,QLabel,QComboBox, QSpinBox
+from PySide2.QtWidgets import QWidget,QHBoxLayout,QVBoxLayout, QLabel,QComboBox, QSpinBox
 
 class OptionChoice(QWidget):
     def __init__(self, label_text, options):
@@ -38,4 +38,38 @@ class OptionNumber(QWidget):
         self.setLayout(layout)
     
     def value_changed(self, i):
+        print(i)
+
+class OptionRange(QWidget):
+    def __init__(self, label_text):
+        super(OptionRange,self).__init__()
+        global_layout = QVBoxLayout()
+
+        text = QLabel(label_text)
+        global_layout.addWidget(text)
+
+        sub_layout = QHBoxLayout()
+        global_layout.addLayout(sub_layout)
+
+        self.bottom_frame = QSpinBox()
+        self.bottom_frame.setMinimum(1) #TODO setear el frame minimo cuando se carga un video
+        self.bottom_frame.setMaximum(11) #TODO setear frame maximo cuando se carga un video
+        self.bottom_frame.setSingleStep(1)
+        self.bottom_frame.valueChanged.connect(self.bottom_value_changed)
+
+        self.top_frame = QSpinBox()
+        self.top_frame.setMinimum(1) #TODO setear el frame minimo cuando se carga un video
+        self.top_frame.setMaximum(11) #TODO setear frame maximo cuando se carga un video
+        self.top_frame.setSingleStep(1)
+        self.top_frame.valueChanged.connect(self.top_value_changed)
+
+        sub_layout.addWidget(self.bottom_frame)
+        sub_layout.addWidget(self.top_frame)
+
+        self.setLayout(global_layout)
+
+    def bottom_value_changed(self, i):
+        print(i)
+
+    def top_value_changed(self, i):
         print(i)

@@ -45,6 +45,9 @@ class Mainwindow(QMainWindow):
 
         self.n_option = OptionNumber("Fotogramas intermedios")
         left_layout.addWidget(self.n_option)
+
+        self.int_frames = OptionRange("Frames a interpolar")
+        left_layout.addWidget(self.int_frames)
         #TODO continuar
         widget.setLayout(main_layout)
         self.setCentralWidget(widget)
