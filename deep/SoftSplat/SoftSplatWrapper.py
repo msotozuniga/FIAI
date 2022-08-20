@@ -10,16 +10,13 @@ class SoftSplatWrapper(ModelWrapperInterface):
 
     def __init__(self, device_system='cpu'):
         self.model = SoftSplatBaseline(device = device_system)
-        super().__init__(device_system=device_system)
+        super(SoftSplatWrapper,self).__init__(device_system=device_system)
 
 
     def load_model(self):
         path = r"C:\Users\matia\Documents\Universidad\T-Titulo\Project\deep\RIFE"
         self.model.load_state_dict(torch.load('{}/SOON.pht'.format(path),map_location=self.model.device_system))
 
-
-    def to_device(self, device):
-        self.model.to(device)
 
     def interpolate(self, frames, h, w, intermediates_frames):
         frames = frames[:, :, :, ::-1] 

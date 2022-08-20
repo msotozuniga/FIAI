@@ -82,16 +82,13 @@ class RIFEWrapper(ModelWrapperInterface):
 
     def __init__(self, device_system='cpu'):
         self.model = Model(device_system)
-        super().__init__(device_system=device_system)
+        super(RIFEWrapper,self).__init__(device_system=device_system)
 
 
     def load_model(self):
         path = r"C:\Users\matia\Documents\Universidad\T-Titulo\Project\deep\RIFE"
         self.model.load_model(path,-1,False)
 
-
-    def to_device(self, device):
-        self.model.to(device)
 
     #TODO arreglar para que se añada las imagenes originales
     def interpolate(self, frames, h, w, intermediates_frames):
