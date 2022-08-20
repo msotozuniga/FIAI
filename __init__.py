@@ -15,7 +15,6 @@ from PySide2.QtWidgets import (
 
 
 
-
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -28,8 +27,6 @@ class MainWindow(QMainWindow):
 
         pagelayout.addLayout(button_layout)
         pagelayout.addLayout(self.stacklayout)
-
-        
 
         widget = QWidget()
         widget.setLayout(pagelayout)

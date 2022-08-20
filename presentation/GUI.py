@@ -1,48 +1,8 @@
 import sys
+from Options import *
 from PySide2.QtCore import *
 from PySide2.QtGui import *
-from PySide2.QtWidgets import *
-
-class OptionChoice(QWidget):
-    def __init__(self, label_text, options):
-        super(OptionChoice,self).__init__()
-        layout = QHBoxLayout()
-
-        text = QLabel(label_text)
-        layout.addWidget(text)
-
-        self.options = QComboBox()
-        self.options.addItems(options)
-        self.options.currentIndexChanged.connect(self.value_changed)
-
-        layout.addWidget(self.options)
-
-        self.setLayout(layout)
-
-    def value_changed(self, i):
-        print(i)
-
-class OptionNumber(QWidget):
-    def __init__(self, label_text):
-        super(OptionNumber,self).__init__()
-        layout = QHBoxLayout()
-
-        text = QLabel(label_text)
-        layout.addWidget(text)
-
-        self.options = QSpinBox()
-        self.options.setMinimum(1)
-        self.options.setMaximum(10)
-        self.options.setSingleStep(1)
-        self.options.valueChanged.connect(self.value_changed)
-
-        layout.addWidget(self.options)
-
-        self.setLayout(layout)
-    
-    def value_changed(self, i):
-        print(i)
-        
+from PySide2.QtWidgets import *        
 
 class Mainwindow(QMainWindow):
     def __init__(self):
@@ -84,7 +44,7 @@ class Mainwindow(QMainWindow):
         self.device_option = OptionChoice("Dispositivo",["CPU", "GPU"]) #TODO Buscar dispositivos
         left_layout.addWidget(self.device_option)
 
-        self.n_option = OptionNumber("Modelo")
+        self.n_option = OptionNumber("Fotogramas intermedios")
         left_layout.addWidget(self.n_option)
         #TODO continuar
         widget.setLayout(main_layout)
