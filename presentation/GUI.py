@@ -1,5 +1,4 @@
-import sys
-from Options import *
+from presentation.Options import *
 from PySide2.QtCore import *
 from PySide2.QtGui import *
 from PySide2.QtWidgets import *        
@@ -70,44 +69,3 @@ class Mainwindow(QMainWindow):
         print("Closing files")
         self.closeEvent(QCloseEvent())
         return
-
-app = QApplication(sys.argv)
-window = Mainwindow()
-window.show()
-
-app.exec_()
-
-'''from PySide2.QtCore import QSize, Qt
-from PySide2.QtWidgets import *
-import sys
-
-from cv2 import QT_PUSH_BUTTON
-
-app = QApplication(sys.argv)
-
-class Mainwindow(QMainWindow):
-    def __init__(self):
-        super().__init__()
-        self.setWindowTitle("FIAI")
-        self.label = QLabel("Click in this window")
-        self.setCentralWidget(self.label)
-        self.setMouseTracking(True)
-
-
-        #self.setMinimumSize(720, 480)
-        #self.setMaximumSize(1920,1080)
-    
-    def contextMenuEvent(self, e):
-        context = QMenu(self)
-        context.addAction(QAction("test 1", self))
-        context.addAction(QAction("test 2", self))
-        context.addAction(QAction("test 3", self))
-        context.exec_(e.globalPos())
-    
-
-window = Mainwindow()
-window.show()
-
-app.exec_()
-#QFileDialog para abrir el buscador
-'''

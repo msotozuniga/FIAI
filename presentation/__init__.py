@@ -1,4 +1,4 @@
-
+'''
 import sys
 
 from PySide2.QtCore import Qt
@@ -51,3 +51,4 @@ window = MainWindow()
 window.show()
 
 app.exec_()
+'''
