@@ -1,9 +1,48 @@
-from fileinput import filename
 import sys
 from PySide2.QtCore import *
 from PySide2.QtGui import *
 from PySide2.QtWidgets import *
 
+class OptionChoice(QWidget):
+    def __init__(self, label_text, options):
+        super(OptionChoice,self).__init__()
+        layout = QHBoxLayout()
+
+        text = QLabel(label_text)
+        layout.addWidget(text)
+
+        self.options = QComboBox()
+        self.options.addItems(options)
+        self.options.currentIndexChanged.connect(self.value_changed)
+
+        layout.addWidget(self.options)
+
+        self.setLayout(layout)
+
+    def value_changed(self, i):
+        print(i)
+
+class OptionNumber(QWidget):
+    def __init__(self, label_text):
+        super(OptionNumber,self).__init__()
+        layout = QHBoxLayout()
+
+        text = QLabel(label_text)
+        layout.addWidget(text)
+
+        self.options = QSpinBox()
+        self.options.setMinimum(1)
+        self.options.setMaximum(10)
+        self.options.setSingleStep(1)
+        self.options.valueChanged.connect(self.value_changed)
+
+        layout.addWidget(self.options)
+
+        self.setLayout(layout)
+    
+    def value_changed(self, i):
+        print(i)
+        
 
 class Mainwindow(QMainWindow):
     def __init__(self):
@@ -33,7 +72,22 @@ class Mainwindow(QMainWindow):
     def createWidget(self):
         widget = QWidget()
         main_layout = QHBoxLayout()
+        left_layout = QVBoxLayout()
+        right_layout = QVBoxLayout()
+
+        main_layout.addLayout(left_layout)
+        main_layout.addLayout(right_layout)
+
+        self.model_option = OptionChoice("Modelo",["BLURIFE","RIFE","SoftSplat"])
+        left_layout.addWidget(self.model_option)
+
+        self.device_option = OptionChoice("Dispositivo",["CPU", "GPU"]) #TODO Buscar dispositivos
+        left_layout.addWidget(self.device_option)
+
+        self.n_option = OptionNumber("Modelo")
+        left_layout.addWidget(self.n_option)
         #TODO continuar
+        widget.setLayout(main_layout)
         self.setCentralWidget(widget)
         
 
