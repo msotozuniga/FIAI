@@ -65,13 +65,39 @@ class Mainwindow(QMainWindow):
         bottom_layout = QHBoxLayout()
 
         main_layout.addLayout(overall_layout)
-        overall_layout.addLayout(bottom_layout)
-
+        
         self.image = QLabel("Hello")
-        self.image.setPixmap(QPixmap(800,600))
+        self.image.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
         overall_layout.addWidget(self.image)
         
-        
+        overall_layout.addLayout(bottom_layout)
+
+        self.frame = QSpinBox()
+        self.frame.setMinimum(1) #TODO setear el frame minimo cuando se carga un video
+        self.frame.setMaximum(11) #TODO setear frame maximo cuando se carga un video
+        self.frame.setSingleStep(1)
+        self.frame.setButtonSymbols(QSpinBox.NoButtons)
+        self.frame.valueChanged.connect(self.changeFrame)
+
+        button_left = QPushButton("Anterior")
+        button_left.clicked.connect(self.changeFrameBackward)
+
+        button_right = QPushButton("Siguiente")
+        button_right.clicked.connect(self.changeFrameForward)
+
+        bottom_layout.addWidget(button_left)
+        bottom_layout.addWidget(self.frame)
+        bottom_layout.addWidget(button_right)
+
+    def changeFrameBackward(self):
+        self.changeFrame(self.frame.value()-1)
+
+    def changeFrameForward(self):
+        self.changeFrame(self.frame.value()+1)
+
+    def changeFrame(self, value):
+        print(value)
+        #TODO
         
 
         
