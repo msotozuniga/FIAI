@@ -21,7 +21,7 @@ class Mainwindow(QMainWindow):
         save_action = QAction("guardar archivo", self)
         save_action.triggered.connect(self.sendFileSavedSignal)
         close_action = QAction("Cerrar archivo", self)
-        close_action.triggered.connect(self.close)
+        close_action.triggered.connect(self.closeFile)
         file_menu.addAction(open_action)
         file_menu.addAction(save_action)
         file_menu.addAction(close_action)
@@ -31,11 +31,18 @@ class Mainwindow(QMainWindow):
     def createWidget(self):
         widget = QWidget()
         main_layout = QHBoxLayout()
+        self.createLayoutLeft(main_layout)
+        self.createLayoutRight(main_layout)
+        #TODO continuar
+        widget.setLayout(main_layout)
+        self.setCentralWidget(widget)
+
+    def createLayoutLeft(self, overall_layout):
         left_layout = QVBoxLayout()
         right_layout = QVBoxLayout()
 
-        main_layout.addLayout(left_layout)
-        main_layout.addLayout(right_layout)
+        overall_layout.addLayout(left_layout)
+        overall_layout.addLayout(right_layout)
 
         self.model_option = OptionChoice("Modelo",["BLURIFE","RIFE","SoftSplat"])
         left_layout.addWidget(self.model_option)
@@ -48,9 +55,25 @@ class Mainwindow(QMainWindow):
 
         self.int_frames = OptionRange("Frames a interpolar")
         left_layout.addWidget(self.int_frames)
-        #TODO continuar
-        widget.setLayout(main_layout)
-        self.setCentralWidget(widget)
+
+        int_button = QPushButton("Interpolar")
+        int_button.clicked.connect(self.sendInterpolationStartSignal)
+        left_layout.addWidget(int_button)
+
+    def createLayoutRight(self, main_layout: QLayout):
+        overall_layout = QVBoxLayout()
+        bottom_layout = QHBoxLayout()
+
+        main_layout.addLayout(overall_layout)
+        overall_layout.addLayout(bottom_layout)
+
+        self.image = QLabel("Hello")
+        self.image.setPixmap(QPixmap(800,600))
+        overall_layout.addWidget(self.image)
+        
+        
+        
+
         
 
     def openFile(self):
@@ -58,6 +81,11 @@ class Mainwindow(QMainWindow):
                                        "Video (*.avi *.mp4)")
         if file_name[0] != '':
             self.sendFileOpenedSignal(file_name[0])
+
+    def closeFile(self):
+        self.sendFileClosedSignal()
+        self.close()
+        return
 
     def sendFileOpenedSignal(self, file_name):
         #TODO
@@ -67,8 +95,15 @@ class Mainwindow(QMainWindow):
     def sendFileSavedSignal(self):
         #TODO
         return
-    
-    def closeFile(self):
-        print("Closing files")
-        self.closeEvent(QCloseEvent())
+
+    def sendFileClosedSignal(self):
+        #TODO
         return
+
+    def sendInterpolationStartSignal(self):
+        #TODO
+        return
+    
+    
+
+    
