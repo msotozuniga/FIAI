@@ -1,7 +1,11 @@
 # Usar el qt designer ubicado en C:\Users\Javier\Documents\Programas\project-env\Lib\site-packages\PySide2
 import sys
+import queue
 from presentation.GUI import Mainwindow
 from PySide2.QtWidgets import QApplication
+
+
+program_queue = queue.Queue()
 
 
 
