@@ -1,3 +1,4 @@
+from presentation.EventController import EventController
 from presentation.Options import *
 from PySide2.QtCore import *
 from PySide2.QtGui import *
@@ -12,6 +13,9 @@ class Mainwindow(QMainWindow):
 
         self.setMinimumSize(720, 480)
         self.setMaximumSize(1920,1080)
+    
+    def setController(self, controller: EventController):
+        self.controller = controller
 
     def createMenu(self):
         self.menu = self.menuBar()
@@ -97,6 +101,7 @@ class Mainwindow(QMainWindow):
 
     def changeFrame(self, value):
         print(value)
+        self.controller.change_frame(value)
         #TODO
         
 
@@ -114,20 +119,19 @@ class Mainwindow(QMainWindow):
         return
 
     def sendFileOpenedSignal(self, file_name):
-        #TODO
-        pass
+        self.controller.openVideo(file_name)
         
     
     def sendFileSavedSignal(self):
-        #TODO
-        return
+        self.controller.saveVideo()
 
     def sendFileClosedSignal(self):
-        #TODO
-        return
+        self.controller.closeProgram()
 
     def sendInterpolationStartSignal(self):
-        #TODO
+        #TODO set_up data
+        data = {"some data": "more data"}
+        self.controller.interpolateFrames(data)
         return
     
     

@@ -1,4 +1,5 @@
 import os
+from this import d
 
 import cv2
 import numpy as np
@@ -8,6 +9,7 @@ from deep.RIFE.RIFEWrapper import RIFEWrapper
 from deep.SoftSplat.SoftSplatWrapper import SoftSplatWrapper
 from Extractor import Extractor
 from Stitcher import Stitcher
+from presentation.EventController import EventController
 
 
 class VideoManager:
@@ -22,13 +24,16 @@ class VideoManager:
         self.stitcher = Stitcher()
         self.fps = None
         self.frame_count = None
+
+    def setController(self, controller: EventController):
+        self.controller = controller
     
     def change_model(self, model_id):
         device= self.model.device_system
         if model_id is 0:
             self.model =RIFEWrapper(device_system=device)
         elif model_id is 1:
-            self.model = Soft
+            self.model = SoftSplatWrapper(device_system=device)
         
 
     def open_video(self, video):
