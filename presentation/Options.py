@@ -8,6 +8,11 @@ class OptionChoice(QWidget):
         text = QLabel(label_text)
         layout.addWidget(text)
 
+        self.model_dicts = {} # TODO setear este dict como algo compartido en todo el sistema
+        for i in range(len(options)):
+            self.model_dicts[options[i]]=i
+        self.selected_model = 0
+
         self.options = QComboBox()
         self.options.addItems(options)
         self.options.currentIndexChanged.connect(self.value_changed)
@@ -18,6 +23,7 @@ class OptionChoice(QWidget):
 
     def value_changed(self, i):
         print(i)
+        self.selected_model = self.model_dicts[i]
 
 class OptionNumber(QWidget):
     def __init__(self, label_text):
