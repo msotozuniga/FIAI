@@ -4,6 +4,7 @@ import cv2
 import numpy as np
 import cv2 as cv #cambiar de cv a pims
 import gc
+import settings
 import event_functions as ef
 from deep.RIFE.RIFEWrapper import RIFEWrapper
 from deep.SoftSplat.SoftSplatWrapper import SoftSplatWrapper

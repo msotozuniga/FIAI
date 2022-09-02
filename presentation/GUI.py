@@ -1,4 +1,4 @@
-import settings as setting
+import settings
 import event_functions as ef
 from presentation.Options import *
 from PySide2.QtCore import *
@@ -130,7 +130,7 @@ class Mainwindow(QMainWindow):
 #        self.controller.saveVideo()
 
     def sendFileClosedSignal(self):
-        setting.process_queue.put((ef.closeProgram,"message", 0))
+        settings.process_queue.put((ef.closeProgram,"message", 0))
         return
 #        self.controller.closeProgram()
 
