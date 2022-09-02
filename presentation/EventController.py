@@ -1,32 +1,29 @@
-from multiprocessing import Event
-from processing.VideoManager import VideoManager
 from presentation.GUI import Mainwindow
-
+from processing.VideoManager import VideoManager
 
 
 class EventController():
 
-    def __init__(self, manager: VideoManager, window: Mainwindow) -> None:
+    def __init__(self, manager, window) -> None:
 
         self.video_manager = manager
-        self.video_manager.setController(self)
         self.window = window
-        self.window.setController(self)
 
-    def closeProgram(self):
-        print("Closing program")
+    def execute_function(self, function, args, to_gui):
+        if to_gui == 1:
+            function(self.window, args)
+        elif to_gui == -1:
+            function(self.video_manager, args)
+        else:
+            function(self.window, self.video_manager, args)
 
-    def saveVideo(self):
-        print("Saving video")
 
-    def interpolateFrames(self, data: dict):
-        print("interpolating")
 
-    def changeFrame(self, value):
-        print("changing value")
+    def run(self):
+        while True:
+            continue
 
-    def openVideo(self, file_name):
-        print("Opening video")
+    
         
 
     

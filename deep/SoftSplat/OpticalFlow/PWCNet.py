@@ -1,7 +1,7 @@
 import torch
 import math
 import torchvision.transforms as transforms
-from deep.SoftSplat.OpticalFlow.PWCNet import correlation
+import deep.SoftSplat.OpticalFlow.correlation as correlation
 
 '''
 implementation fetched from QVI

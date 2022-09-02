@@ -1,15 +1,15 @@
 import os
-from this import d
 
 import cv2
 import numpy as np
 import cv2 as cv #cambiar de cv a pims
 import gc
+import event_functions as ef
 from deep.RIFE.RIFEWrapper import RIFEWrapper
 from deep.SoftSplat.SoftSplatWrapper import SoftSplatWrapper
-from Extractor import Extractor
-from Stitcher import Stitcher
-from presentation.EventController import EventController
+from processing.Extractor import Extractor
+from processing.Stitcher import Stitcher
+
 
 
 class VideoManager:
@@ -24,9 +24,6 @@ class VideoManager:
         self.stitcher = Stitcher()
         self.fps = None
         self.frame_count = None
-
-    def setController(self, controller: EventController):
-        self.controller = controller
     
     def change_model(self, model_id):
         device= self.model.device_system
