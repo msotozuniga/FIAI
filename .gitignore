@@ -155,3 +155,6 @@ processing/temp/
 
 # VsCode
 .vscode
+
+# Models
+deep\RIFE\flownet.pkl

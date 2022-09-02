@@ -86,8 +86,8 @@ class RIFEWrapper(ModelWrapperInterface):
 
 
     def load_model(self):
-        path = r"C:\Users\matia\Documents\Universidad\T-Titulo\Project\deep\RIFE"
-        self.model.load_model(path,-1,False)
+        path = "deep/RIFE"
+        self.model.load_model(path,-1,True)
 
 
     #TODO arreglar para que se añada las imagenes originales

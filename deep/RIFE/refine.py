@@ -32,27 +32,26 @@ class Conv2(nn.Module):
     
 c = 16
 class Contextnet(nn.Module):
-    def __init__(self, device):
+    def __init__(self):
         super(Contextnet, self).__init__()
         self.conv1 = Conv2(3, c)
         self.conv2 = Conv2(c, 2*c)
         self.conv3 = Conv2(2*c, 4*c)
         self.conv4 = Conv2(4*c, 8*c)
-        self.gpu = device
     
     def forward(self, x, flow):
         x = self.conv1(x)
         flow = F.interpolate(flow, scale_factor=0.5, mode="bilinear", align_corners=False) * 0.5
-        f1 = warp(x, flow, self.gpu)        
+        f1 = warp(x, flow, x.device)        
         x = self.conv2(x)
         flow = F.interpolate(flow, scale_factor=0.5, mode="bilinear", align_corners=False) * 0.5
-        f2 = warp(x, flow, self.gpu)
+        f2 = warp(x, flow, x.device)
         x = self.conv3(x)
         flow = F.interpolate(flow, scale_factor=0.5, mode="bilinear", align_corners=False) * 0.5
-        f3 = warp(x, flow, self.gpu)
+        f3 = warp(x, flow, x.device)
         x = self.conv4(x)
         flow = F.interpolate(flow, scale_factor=0.5, mode="bilinear", align_corners=False) * 0.5
-        f4 = warp(x, flow, self.gpu)
+        f4 = warp(x, flow, x.device)
         return [f1, f2, f3, f4]
     
 class Unet(nn.Module):

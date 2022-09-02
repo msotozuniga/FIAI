@@ -1,4 +1,5 @@
 import sys
+from processing.VideoManager import VideoManager
 import settings
 from presentation.GUI import Mainwindow
 from PySide2.QtWidgets import QApplication
@@ -10,6 +11,8 @@ if not QApplication.instance():
 else:
     app = QApplication.instance()
 window = Mainwindow()
+manager = VideoManager()
+
 window.show()
 
 app.exec_()
