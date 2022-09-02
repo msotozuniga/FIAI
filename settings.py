@@ -1,9 +1,12 @@
 import queue
+import threading
 
 
 
 def initialize_queue():
     global process_queue
+    global queue_condition
+    queue_condition = threading.Condition()
     process_queue = queue.Queue()
 
 

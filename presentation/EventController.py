@@ -1,18 +1,29 @@
+import queue
+import threading
+import settings
+import time
 from presentation.GUI import Mainwindow
 from processing.VideoManager import VideoManager
+from PySide2.QtWidgets import QApplication
 
 
 class EventController():
 
-    def __init__(self, manager, window) -> None:
+    def __init__(self, manager=None, window=None) -> None:
 
         self.video_manager = manager
         self.window = window
 
+    def set_manager(self, video_manager):
+        self.video_manager = video_manager
+
+    def set_window(self, window):
+        self.window = window
+
     def execute_function(self, function, args, to_gui):
-        if to_gui == 1:
+        if to_gui >0:
             function(self.window, args)
-        elif to_gui == -1:
+        elif to_gui < 0:
             function(self.video_manager, args)
         else:
             function(self.window, self.video_manager, args)
@@ -21,7 +32,11 @@ class EventController():
 
     def run(self):
         while True:
-            continue
+            func, params, to_gui = settings.process_queue.get()
+            self.execute_function(func,params,to_gui)
+        
+
+        
 
     
         

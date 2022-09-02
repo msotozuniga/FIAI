@@ -1,21 +1,51 @@
 import sys
-from processing.VideoManager import VideoManager
+
 import settings
+import threading
 from presentation.GUI import Mainwindow
+from processing.VideoManager import VideoManager
+from presentation.EventController import EventController
 from PySide2.QtWidgets import QApplication
 
 
 settings.initialize_queue()
+
+
+
+#def main():
+    
+#    global window
+
 if not QApplication.instance():
     app = QApplication(sys.argv)
 else:
     app = QApplication.instance()
+
+    
 window = Mainwindow()
 manager = VideoManager()
-
+controller = EventController(manager,window)
+controller_thread = threading.Thread(target=controller.run)
+controller_thread.setDaemon(True)
+controller_thread.start()
 window.show()
 
 app.exec_()
+
+
+
+
+
+
+#
+#initial_lock.acquire()
+#while window is None:
+#    initial_lock.wait()
+
+#initial_lock.release()
+#controller.set_manager(manager)
+#controller.set_window(window)
+#controller.run()
 
 # Usar el qt designer ubicado en C:\Users\Javier\Documents\Programas\project-env\Lib\site-packages\PySide2
 
