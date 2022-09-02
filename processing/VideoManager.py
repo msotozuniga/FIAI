@@ -85,6 +85,10 @@ class VideoManager:
         print(data)
         return
 
-    def get_frame(value):
-        print("frame")
-        print(value)
+    def get_frame(self,value):
+        self.capturer.set(cv2.CAP_PROP_POS_FRAMES,value)
+        ret, frame = self.capturer.read()
+        if not ret:
+            print("not ret") #TODO avisar que el valor es incorrecto
+        settings.process_queue.put((ef.responseFrame,frame,1))
+
