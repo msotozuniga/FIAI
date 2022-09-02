@@ -72,7 +72,7 @@ class Mainwindow(QMainWindow):
 
         main_layout.addLayout(overall_layout)
         
-        self.image = QLabel("Hello")
+        self.image = QLabel("No se ha abierto un video")
         self.image.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
         overall_layout.addWidget(self.image)
         
@@ -100,15 +100,7 @@ class Mainwindow(QMainWindow):
 
     def changeFrameForward(self):
         self.changeFrame(self.frame.value()+1)
-
-    def changeFrame(self, value):
-        print(value)
-#        self.controller.change_frame(value)
-        #TODO
         
-
-        
-
     def openFile(self):
         file_name = QFileDialog.getOpenFileName(self,"Open File","/home",
                                        "Video (*.avi *.mp4)")
@@ -120,25 +112,32 @@ class Mainwindow(QMainWindow):
         self.close()
         return
 
+    def changeFrame(self, value):
+        settings.process_queue.put((ef.requestFrame,value,0))
+
     def sendFileOpenedSignal(self, file_name):
-        return
-#        self.controller.openVideo(file_name)
+        settings.process_queue.put((ef.OpenVideo,None, 0))
+        
         
     
     def sendFileSavedSignal(self):
-        return
-#        self.controller.saveVideo()
+        settings.process_queue.put((ef.saveVideo,None, 0))
+        
 
     def sendFileClosedSignal(self):
         settings.process_queue.put((ef.closeProgram,"message", 0))
         return
-#        self.controller.closeProgram()
 
     def sendInterpolationStartSignal(self):
-        #TODO set_up data
-        data = {"some data": "more data"}
-#        self.controller.interpolateFrames(data)
-        return
+        data = {}
+        data["model"]= self.model_option.selected_option
+        data["device"] = self.device_option.selected_option
+        data["inbetweens"] = self.n_option.value
+        data["frames"]= (self.int_frames.bottom_frame.value,self.int_frames.top_frame.value)
+        data["area"]=(None,None,None,None) #TODO agarrar datos
+        settings.process_queue.put((ef.interpolate,data, -1))
+
+    
     
     
 

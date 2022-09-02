@@ -11,7 +11,7 @@ class OptionChoice(QWidget):
         self.model_dicts = {} # TODO setear este dict como algo compartido en todo el sistema
         for i in range(len(options)):
             self.model_dicts[options[i]]=i
-        self.selected_model = 0
+        self.selected_option = 0
 
         self.options = QComboBox()
         self.options.addItems(options)
@@ -23,7 +23,7 @@ class OptionChoice(QWidget):
 
     def value_changed(self, i):
         print(i)
-        self.selected_model = self.model_dicts[i]
+        self.selected_option = self.model_dicts[i]
 
 class OptionNumber(QWidget):
     def __init__(self, label_text):
@@ -38,6 +38,7 @@ class OptionNumber(QWidget):
         self.options.setMaximum(10)
         self.options.setSingleStep(1)
         self.options.valueChanged.connect(self.value_changed)
+        self.value = 1
 
         layout.addWidget(self.options)
 
@@ -45,6 +46,7 @@ class OptionNumber(QWidget):
     
     def value_changed(self, i):
         print(i)
+        self.value=i
 
 class OptionRange(QWidget):
     def __init__(self, label_text):
