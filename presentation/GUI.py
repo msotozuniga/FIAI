@@ -113,10 +113,10 @@ class Mainwindow(QMainWindow):
         return
 
     def changeFrame(self, value):
-        settings.process_queue.put((ef.requestFrame,value,0))
+        settings.process_queue.put((ef.requestFrame,value,-1))
 
     def sendFileOpenedSignal(self, file_name):
-        settings.process_queue.put((ef.OpenVideo,None, 0))
+        settings.process_queue.put((ef.openVideo,file_name, -1))
         
         
     

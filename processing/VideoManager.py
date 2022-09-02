@@ -71,3 +71,20 @@ class VideoManager:
             np.savez_compressed(f, final)
         del self.video
         gc.collect()
+
+    def save_video():
+        print("Saving video")
+        return
+
+    def clear_cache():
+        print("Clearing cache")
+        return
+
+    def interpolate(data):
+        print("interpolating")
+        print(data)
+        return
+
+    def get_frame(value):
+        print("frame")
+        print(value)
