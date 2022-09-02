@@ -1,9 +1,10 @@
 import sys
+import settings
 from presentation.GUI import Mainwindow
 from PySide2.QtWidgets import QApplication
 
 
-
+settings.initialize_queue()
 if not QApplication.instance():
     app = QApplication(sys.argv)
 else:
