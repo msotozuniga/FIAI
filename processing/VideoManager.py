@@ -43,6 +43,7 @@ class VideoManager:
         self.capturer = cap
         self.fps = cap.get(cv2.CAP_PROP_FPS)
         self.frame_count = cap.get(cv2.CAP_PROP_FRAME_COUNT)
+        return (0, self.frame_count)
 
     def generate_frames(self, lower_left, upper_right, frame_start, frame_end, frames_to_create):
         '''
@@ -90,6 +91,6 @@ class VideoManager:
         ret, frame = self.capturer.read()
         if not ret:
             print("not ret") #TODO avisar que el valor es incorrecto
-        cv2.cvtColor(frame,cv2.COLOR_BGR2RGB, frame)  
-        settings.process_queue.put((ef.responseFrame,(frame,0),1))
+        cv2.cvtColor(frame,cv2.COLOR_BGR2RGB, frame)
+        return (frame,value)
 

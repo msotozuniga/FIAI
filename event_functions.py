@@ -13,12 +13,14 @@ def saveVideo(window,manager,message):
 def interpolate(manager, data):
     manager.interpolate(data)
 
-def openVideo(manager,file_name):
-    manager.open_video(file_name)
-    manager.get_frame(0)
+def openVideo(window, manager,file_name):
+    data = manager.open_video(file_name)
+    window.setVideoData(data)
+    requestFrame(window,manager,0)
 
-def requestFrame(manager,value):
-    manager.get_frame(value)
+def requestFrame(window, manager,value):
+    data=manager.get_frame(value)
+    window.setFrame(data)
 
 def responseFrame(window, data):
     window.setFrame(data)

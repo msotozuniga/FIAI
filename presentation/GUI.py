@@ -112,14 +112,16 @@ class Mainwindow(QMainWindow):
         bytesPerLine = 3 * width                                       
         q_img = QImage(frame.data, width, height, bytesPerLine,QImage.Format_RGB888)
         q_pix = QPixmap(q_img)
-        print(self.frame.value())
         self.frame.blockSignals(True)
         self.image.setPixmap(q_pix)
         self.frame.setValue(value)
-        print(self.frame.value())
         self.frame.blockSignals(False)
-        print(self.frame.value())
         
+    def setVideoData(self, data):
+        minimum, maximun = data
+        self.frame.setMinimum(minimum)
+        self.frame.setMaximum(maximun)
+
         
 
         
@@ -136,10 +138,10 @@ class Mainwindow(QMainWindow):
 
     def changeFrame(self, value):
         if value != self.frame.value(): 
-            settings.process_queue.put((ef.requestFrame,value,-1))
+            settings.process_queue.put((ef.requestFrame,value,0))
 
     def sendFileOpenedSignal(self, file_name):
-        settings.process_queue.put((ef.openVideo,file_name, -1))
+        settings.process_queue.put((ef.openVideo,file_name, 0))
         
         
     
