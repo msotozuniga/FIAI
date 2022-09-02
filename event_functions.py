@@ -21,5 +21,4 @@ def requestFrame(manager,value):
     manager.get_frame(value)
 
 def responseFrame(window, frame):
-    print(frame)
-    #window.showFrame(frame)
+    window.setFrame(frame)

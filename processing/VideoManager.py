@@ -90,5 +90,6 @@ class VideoManager:
         ret, frame = self.capturer.read()
         if not ret:
             print("not ret") #TODO avisar que el valor es incorrecto
+        cv2.cvtColor(frame,cv2.COLOR_BGR2RGB, frame)  
         settings.process_queue.put((ef.responseFrame,frame,1))
 

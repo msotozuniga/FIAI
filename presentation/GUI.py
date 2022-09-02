@@ -1,5 +1,6 @@
 import settings
 import event_functions as ef
+import cv2
 from presentation.Options import *
 from PySide2.QtCore import *
 from PySide2.QtGui import *
@@ -100,6 +101,14 @@ class Mainwindow(QMainWindow):
 
     def changeFrameForward(self):
         self.changeFrame(self.frame.value()+1)
+
+    def setFrame(self, frame):
+        height, width, channels = frame.shape
+        bytesPerLine = 3 * width                                       
+        q_img = QImage(frame.data, width, height, bytesPerLine,QImage.Format_RGB888)
+        q_pix = QPixmap(q_img)
+        self.image.setPixmap(q_pix)
+
         
     def openFile(self):
         file_name = QFileDialog.getOpenFileName(self,"Open File","/home",
