@@ -80,10 +80,11 @@ class Mainwindow(QMainWindow):
         overall_layout.addLayout(bottom_layout)
 
         self.frame = QSpinBox()
-        self.frame.setMinimum(1) #TODO setear el frame minimo cuando se carga un video
-        self.frame.setMaximum(11) #TODO setear frame maximo cuando se carga un video
+        self.frame.setMinimum(0) #TODO setear el frame minimo cuando se carga un video
+        self.frame.setMaximum(100) #TODO setear frame maximo cuando se carga un video
         self.frame.setSingleStep(1)
         self.frame.setButtonSymbols(QSpinBox.NoButtons)
+        self.frame.setValue(1)
         self.frame.valueChanged.connect(self.changeFrame)
 
         button_left = QPushButton("Anterior")
@@ -97,17 +98,29 @@ class Mainwindow(QMainWindow):
         bottom_layout.addWidget(button_right)
 
     def changeFrameBackward(self):
+        print(self.frame.value())
         self.changeFrame(self.frame.value()-1)
 
     def changeFrameForward(self):
+
         self.changeFrame(self.frame.value()+1)
 
-    def setFrame(self, frame):
+    def setFrame(self, data):
+        frame, value = data
+        print(value)
         height, width, channels = frame.shape
         bytesPerLine = 3 * width                                       
         q_img = QImage(frame.data, width, height, bytesPerLine,QImage.Format_RGB888)
         q_pix = QPixmap(q_img)
+        print(self.frame.value())
+        self.frame.blockSignals(True)
         self.image.setPixmap(q_pix)
+        self.frame.setValue(value)
+        print(self.frame.value())
+        self.frame.blockSignals(False)
+        print(self.frame.value())
+        
+        
 
         
     def openFile(self):
@@ -122,7 +135,8 @@ class Mainwindow(QMainWindow):
         return
 
     def changeFrame(self, value):
-        settings.process_queue.put((ef.requestFrame,value,-1))
+        if value != self.frame.value(): 
+            settings.process_queue.put((ef.requestFrame,value,-1))
 
     def sendFileOpenedSignal(self, file_name):
         settings.process_queue.put((ef.openVideo,file_name, -1))

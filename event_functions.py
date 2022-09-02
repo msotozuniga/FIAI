@@ -20,5 +20,5 @@ def openVideo(manager,file_name):
 def requestFrame(manager,value):
     manager.get_frame(value)
 
-def responseFrame(window, frame):
-    window.setFrame(frame)
+def responseFrame(window, data):
+    window.setFrame(data)
