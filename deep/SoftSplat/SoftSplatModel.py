@@ -17,15 +17,14 @@ def postprocess(x):
 
 
 class BackWarp(nn.Module):
-    def __init__(self, clip=True, device = torch.device("cpu")):
+    def __init__(self, clip=True):
         super(BackWarp, self).__init__()
-        self.device = device
         self.clip = clip
 
     def forward(self, img, flow):
         b, c, h, w = img.shape
         gridY, gridX = torch.meshgrid(torch.arange(h), torch.arange(w))
-        gridX, gridY = gridX.to(self.device), gridY.to(self.device)
+        gridX, gridY = gridX.to(img.device), gridY.to(img.device)
 
         u = flow[:, 0]  # W
         v = flow[:, 1]  # H
@@ -49,13 +48,13 @@ class BackWarp(nn.Module):
 
 
 class SoftSplatBaseline(nn.Module):
-    def __init__(self, flow_predictor_path=None, device=torch.device("cpu")):
+    def __init__(self, flow_predictor_path=None):
         super(SoftSplatBaseline, self).__init__()
-        self.flow_predictor = PWCNet(gpu=device)
+        self.flow_predictor = PWCNet()
         if flow_predictor_path is not None:
-            self.flow_predictor.load_state_dict(torch.load(flow_predictor_path,map_location=device))
+            self.flow_predictor.load_state_dict(torch.load(flow_predictor_path))
         self.fwarp = Softsplat()
-        self.bwarp = BackWarp(clip=False,device=device)
+        self.bwarp = BackWarp(clip=False)
         self.feature_pyramid = nn.ModuleList([
             nn.Sequential(
                 nn.Conv2d(3, 32, 3, 1, 1),
@@ -78,11 +77,6 @@ class SoftSplatBaseline(nn.Module):
         ])
         self.synth_net = GridNet()
         self.alpha = nn.Parameter(torch.randn(1))
-        self.device_system = device
-
-    def to(self,device):
-        super.to(device)
-        self.device_system = device
 
     def forward(self, x, target_t):
         x = preprocess(x)

@@ -12,14 +12,10 @@ https://github.com/xuxy09/QVI
 
 ##########################################################
 
-device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-
 class PWCNet(torch.nn.Module):
-    def __init__(self, gpu = torch.device("cpu")):
+    def __init__(self):
         super(PWCNet, self).__init__()
-        global device
         self.in_normalize = transforms.Normalize([0.429, 0.431, 0.397], [1.0, 1.0, 1.0])
-        device = gpu
         class Extractor(torch.nn.Module):
             def __init__(self):
                 super(Extractor, self).__init__()
@@ -157,7 +153,7 @@ class PWCNet(torch.nn.Module):
                                                                                                   tensorFlow.size(3))
 
                     Backward_tensorGrid[str(tensorFlow.size())] = torch.cat([tensorHorizontal, tensorVertical],
-                                                                            1).to(device)
+                                                                            1).to(tensorInput.device)
                 # end
 
                 if str(tensorFlow.size()) not in Backward_tensorPartial:
