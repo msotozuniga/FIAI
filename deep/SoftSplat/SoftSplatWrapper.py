@@ -9,13 +9,12 @@ from torchvision.transforms.functional import to_tensor, to_pil_image
 class SoftSplatWrapper(ModelWrapperInterface):
 
     def __init__(self, device_system='cpu'):
-        self.model = SoftSplatBaseline(device = device_system)
-        super(SoftSplatWrapper,self).__init__(device_system=device_system)
+        super(SoftSplatWrapper,self).__init__(model=SoftSplatBaseline(),id=1,device_system=device_system)
 
 
     def load_model(self):
-        path = r"C:\Users\matia\Documents\Universidad\T-Titulo\Project\deep\RIFE"
-        self.model.load_state_dict(torch.load('{}/SOON.pht'.format(path),map_location=self.model.device_system))
+        path = "deep/SoftSplat"
+        self.model.load_state_dict(torch.load('{}/SOON.pht'.format(path),map_location=self.device_system))
 
 
     def interpolate(self, frames, h, w, intermediates_frames):
@@ -28,7 +27,7 @@ class SoftSplatWrapper(ModelWrapperInterface):
             I1 = to_tensor(frames[i])
             batch = torch.stack([I0, I1], dim=1)
             batch = batch[None,:,:,:,:]
-            batch = batch.to(self.model.device_system,non_blocking=True).float()
+            batch = batch.to(self.device_system,non_blocking=True).float()
 
             
             output = self.make_inference(batch, intermediates_frames)
@@ -43,7 +42,7 @@ class SoftSplatWrapper(ModelWrapperInterface):
         t = np.arange(1/(n+1), 1, 1/(n+1))
         out = []
         for target_t in t:
-            target = torch.tensor([target_t]).to(self.model.device_system)
+            target = torch.tensor([target_t]).to(self.device_system)
             middle = self.model(batch,target)
             pred = to_pil_image(middle[0],'RGB')
             temp = np.array(pred)

@@ -6,22 +6,16 @@ from deep.RIFE.refine import *
 
     
 class Model:
-    def __init__(self, local_rank=-1, arbitrary=False, fine_tune = False, device_system = 'cpu'):
-        self.device_system = device_system
+    def __init__(self, local_rank=-1, arbitrary=False, fine_tune = False):
         self.flownet = IFNet()
-        self.device()
-        self.eval()
 
     def eval(self):
         self.flownet.eval()
 
-    def device(self):
-        self.flownet.to(self.device_system)
-
     def to(self,device):
         self.flownet.to(device)
 
-    def load_model(self, path, rank=0, m = True):
+    def load_model(self, path, rank=0, m = True, device = "cpu"):
         def convert(param):
             return {
             k.replace("module.", ""): v
@@ -30,9 +24,9 @@ class Model:
             }
             
         if rank <= 0 and m == True:
-            self.flownet.load_state_dict(convert(torch.load('{}/flownet.pkl'.format(path),map_location=self.device_system)))
+            self.flownet.load_state_dict(convert(torch.load('{}/flownet.pkl'.format(path),map_location=device)))
         else:
-            self.flownet.load_state_dict(torch.load('{}/flownet.pkl'.format(path),map_location=self.device_system))
+            self.flownet.load_state_dict(torch.load('{}/flownet.pkl'.format(path),map_location=device))
 
     def inference(self, img0, img1, scale_list=[4, 2, 1], TTA=False, timestep=0.5):
         imgs = torch.cat((img0, img1), 1)

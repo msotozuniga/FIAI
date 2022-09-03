@@ -81,13 +81,12 @@ def ssim_matlab(img1, img2, window_size=11, window=None, size_average=True, full
 class RIFEWrapper(ModelWrapperInterface):
 
     def __init__(self, device_system='cpu'):
-        self.model = Model(device_system)
-        super(RIFEWrapper,self).__init__(device_system=device_system)
+        super(RIFEWrapper,self).__init__(model = Model(), id= 0, device_system=device_system)
 
 
     def load_model(self):
         path = "deep/RIFE"
-        self.model.load_model(path,-1,True)
+        self.model.load_model(path,-1,True, device = self.device_system)
 
 
     #TODO arreglar para que se añada las imagenes originales
@@ -99,10 +98,10 @@ class RIFEWrapper(ModelWrapperInterface):
         padding = (0, pw - w, 0, ph - h)
         exit = []  # [frames[0].numpy()]#
         for i in tqdm(range(len(frames) - 1)):
-            I0 = torch.from_numpy(np.transpose(frames[i], (2, 0, 1)).copy()).to(self.model.device_system,
+            I0 = torch.from_numpy(np.transpose(frames[i], (2, 0, 1)).copy()).to(self.device_system,
                                                                          non_blocking=True).unsqueeze(0).float() / 255.
             I0 = F.pad(I0, padding)
-            I1 = torch.from_numpy(np.transpose(frames[i+1], (2, 0, 1)).copy()).to(self.model.device_system,
+            I1 = torch.from_numpy(np.transpose(frames[i+1], (2, 0, 1)).copy()).to(self.device_system,
                                                                          non_blocking=True).unsqueeze(0).float() / 255.
             I1 = F.pad(I1, padding)
 
