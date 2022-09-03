@@ -5,21 +5,16 @@ import threading
 
 def initialize_queue():
     global process_queue
-    global queue_condition
-    queue_condition = threading.Condition()
+    global model_index
+    global device_index
+    model_index = {
+        "RIFE": 0,
+        "Softsplat": 1,
+        "BLURIFE": 2
+    }
+    device_index = {
+        "CPU":0,
+        "GPU":1
+    }
     process_queue = queue.Queue()
 
-
-'''
-    def saveVideo(self):
-        print("Saving video")
-
-    def interpolateFrames(self, data: dict):
-        print("interpolating")
-
-    def changeFrame(self, value):
-        print("changing value")
-
-    def openVideo(self, file_name):
-        print("Opening video")
-'''

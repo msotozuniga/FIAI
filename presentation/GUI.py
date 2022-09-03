@@ -51,10 +51,10 @@ class Mainwindow(QMainWindow):
         overall_layout.addLayout(left_layout)
         overall_layout.addLayout(right_layout)
 
-        self.model_option = OptionChoice("Modelo",["BLURIFE","RIFE","SoftSplat"])
+        self.model_option = OptionChoice("Modelo",settings.model_index)
         left_layout.addWidget(self.model_option)
 
-        self.device_option = OptionChoice("Dispositivo",["CPU", "GPU"]) #TODO Buscar dispositivos
+        self.device_option = OptionChoice("Dispositivo",settings.device_index) #TODO Buscar dispositivos
         left_layout.addWidget(self.device_option)
 
         self.n_option = OptionNumber("Fotogramas intermedios")
@@ -98,7 +98,6 @@ class Mainwindow(QMainWindow):
         bottom_layout.addWidget(button_right)
 
     def changeFrameBackward(self):
-        print(self.frame.value())
         self.changeFrame(self.frame.value()-1)
 
     def changeFrameForward(self):
@@ -107,7 +106,6 @@ class Mainwindow(QMainWindow):
 
     def setFrame(self, data):
         frame, value = data
-        print(value)
         height, width, channels = frame.shape
         bytesPerLine = 3 * width                                       
         q_img = QImage(frame.data, width, height, bytesPerLine,QImage.Format_RGB888)
@@ -121,6 +119,7 @@ class Mainwindow(QMainWindow):
         minimum, maximun = data
         self.frame.setMinimum(minimum)
         self.frame.setMaximum(maximun)
+        self.int_frames.setLimits(minimum,maximun)
 
         
 
@@ -155,10 +154,10 @@ class Mainwindow(QMainWindow):
 
     def sendInterpolationStartSignal(self):
         data = {}
-        data["model"]= self.model_option.selected_option
-        data["device"] = self.device_option.selected_option
-        data["inbetweens"] = self.n_option.value
-        data["frames"]= (self.int_frames.bottom_frame.value,self.int_frames.top_frame.value)
+        data["model"]= self.model_option.getValue()
+        data["device"] = self.device_option.getValue()
+        data["inbetweens"] = self.n_option.getValue()
+        data["frames"]= self.int_frames.getValue()
         data["area"]=(None,None,None,None) #TODO agarrar datos
         settings.process_queue.put((ef.interpolate,data, -1))
 
