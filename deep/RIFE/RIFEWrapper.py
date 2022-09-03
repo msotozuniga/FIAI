@@ -1,6 +1,6 @@
 from tqdm import tqdm
 
-from deep.ModelWrapperInterface import ModelWrapperInterface
+from deep.ModelWrapperAbstract import ModelWrapperAbstract
 from deep.RIFE.RIFE import Model
 import numpy as np
 from math import exp
@@ -78,7 +78,7 @@ def ssim_matlab(img1, img2, window_size=11, window=None, size_average=True, full
     return ret
 
 
-class RIFEWrapper(ModelWrapperInterface):
+class RIFEWrapper(ModelWrapperAbstract):
 
     def __init__(self, device_system='cpu'):
         super(RIFEWrapper,self).__init__(model = Model(), id= 0, device_system=device_system)

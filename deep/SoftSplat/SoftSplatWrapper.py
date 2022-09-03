@@ -2,11 +2,11 @@ import torch
 import numpy as np
 from PIL import Image
 from tqdm import tqdm
-from deep.ModelWrapperInterface import ModelWrapperInterface
+from deep.ModelWrapperAbstract import ModelWrapperAbstract
 from deep.SoftSplat.SoftSplatModel import SoftSplatBaseline
 from torchvision.transforms.functional import to_tensor, to_pil_image
 
-class SoftSplatWrapper(ModelWrapperInterface):
+class SoftSplatWrapper(ModelWrapperAbstract):
 
     def __init__(self, device_system='cpu'):
         super(SoftSplatWrapper,self).__init__(model=SoftSplatBaseline(),id=1,device_system=device_system)
