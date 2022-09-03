@@ -13,8 +13,8 @@ def initialize_queue():
         "BLURIFE": 2
     }
     device_index = {
-        "CPU":0,
-        "GPU":1
+        "CPU":"cpu",
+        "GPU":"cuda"
     }
     process_queue = queue.Queue()
 
