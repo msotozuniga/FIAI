@@ -16,6 +16,8 @@ class Mainwindow(QMainWindow):
 
         self.setMinimumSize(720, 480)
         self.setMaximumSize(1920,1080)
+        self.point_one = None
+        self.point_two = None
     
     def setController(self, controller):
         self.controller = controller
@@ -75,6 +77,9 @@ class Mainwindow(QMainWindow):
         
         self.image = QLabel("No se ha abierto un video")
         self.image.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+        self.image.mousePressEvent = self.setFirstPoint
+        self.image.mouseReleaseEvent = self.setSecondPoint
+        self.image.mouseDoubleClickEvent = self.deselectPoints
         overall_layout.addWidget(self.image)
         
         overall_layout.addLayout(bottom_layout)
@@ -97,6 +102,26 @@ class Mainwindow(QMainWindow):
         bottom_layout.addWidget(self.frame)
         bottom_layout.addWidget(button_right)
 
+    def deselectPoints(self,event):
+        self.point_one=None
+        self.point_two=None
+
+    def getEventPoints(self,event):
+        x = event.pos().x()
+        y = event.pos().y()
+        return x, y
+    def setFirstPoint(self, event):
+        x,y = self.getEventPoints(event)
+        self.point_one = (x,y)
+        print(self.point_one)
+
+    def setSecondPoint(self, event):
+        x,y = self.getEventPoints(event)
+        self.point_two = (x,y)
+        print(self.point_two)
+        #TODO crear cuadrado en imagen transparente que cubra la zona seleccionada
+
+
     def changeFrameBackward(self):
         self.changeFrame(self.frame.value()-1)
 
@@ -108,8 +133,8 @@ class Mainwindow(QMainWindow):
         frame, value = data
         height, width, channels = frame.shape
         bytesPerLine = 3 * width                                       
-        q_img = QImage(frame.data, width, height, bytesPerLine,QImage.Format_RGB888)
-        q_pix = QPixmap(q_img)
+        self.q_img = QImage(frame.data, width, height, bytesPerLine,QImage.Format_RGB888)
+        q_pix = QPixmap(self.q_img)
         self.frame.blockSignals(True)
         self.image.setPixmap(q_pix)
         self.frame.setValue(value)
@@ -158,7 +183,7 @@ class Mainwindow(QMainWindow):
         data["device"] = self.device_option.getValue()
         data["inbetweens"] = self.n_option.getValue()
         data["frames"]= self.int_frames.getValue()
-        data["area"]=(None,None,None,None) #TODO agarrar datos
+        data["area"]=(None,None,None,None) #(down,left,up,right) TODO agarrar datos
         settings.process_queue.put((ef.interpolate,data, -1))
 
     

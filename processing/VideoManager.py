@@ -81,7 +81,19 @@ class VideoManager:
         print("Clearing cache")
         return
 
-    def interpolate(data):
+    def interpolate(self,data):
+        model_id = data["model"]
+        if model_id != self.model.id:
+            self.change_model(model_id)
+        device = data["device"]
+        if device != self.model.device_system:
+            self.model.to_device(device)
+        n = data["inbetweens"]
+        piece = data["frames"]
+        down,left,up,right = data["area"]
+
+        
+
 
         print("interpolating")
         print(data)
