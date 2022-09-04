@@ -6,6 +6,57 @@ from PySide2.QtCore import *
 from PySide2.QtGui import *
 from PySide2.QtWidgets import *
 
+class ImageLabel(QWidget):
+
+    def __init__(self):
+        super(ImageLabel,self).__init__()
+        layout = QVBoxLayout()
+        self.point_one = None
+        self.point_two = None
+        self.image = None
+        self.canvas = QLabel("No se ha abierto un video")
+        self.canvas.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+        self.canvas.mousePressEvent = self.setFirstPoint
+        self.canvas.mouseReleaseEvent = self.setSecondPoint
+        self.canvas.mouseDoubleClickEvent = self.deselectPoints
+        self.timer = QTimer(self)
+        self.timer.setSingleShot(True)
+        app = QApplication.instance()
+        self.double_click_interval = app.doubleClickInterval()
+        layout.addWidget(self.canvas)
+        self.setLayout(layout)
+        
+        
+
+    def deselectPoints(self,event):
+        self.point_one=None
+        self.point_two=None
+        print(self.point_one)
+        print(self.point_two)
+
+    def getEventPoints(self,event):
+        x = event.pos().x()
+        y = event.pos().y()
+        return x, y
+
+    def setFirstPoint(self, event):
+        if not self.timer.isActive():
+            self.timer.start(self.double_click_interval)
+        x,y = self.getEventPoints(event)
+        self.point_one = (x,y)
+        print(self.point_one)
+
+    def setSecondPoint(self, event):
+        if not self.timer.isActive():
+            x,y = self.getEventPoints(event)
+            self.point_two = (x,y)
+            print(self.point_two)
+            #TODO crear cuadrado en imagen transparente que cubra la zona seleccionada
+
+    def setFrame(self,image):
+        q_pix = QPixmap(image)
+        self.canvas.setPixmap(q_pix)
+        
 
 class Mainwindow(QMainWindow):
     def __init__(self):
@@ -16,8 +67,6 @@ class Mainwindow(QMainWindow):
 
         self.setMinimumSize(720, 480)
         self.setMaximumSize(1920,1080)
-        self.point_one = None
-        self.point_two = None
     
     def setController(self, controller):
         self.controller = controller
@@ -74,12 +123,9 @@ class Mainwindow(QMainWindow):
         bottom_layout = QHBoxLayout()
 
         main_layout.addLayout(overall_layout)
-        
-        self.image = QLabel("No se ha abierto un video")
-        self.image.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
-        self.image.mousePressEvent = self.setFirstPoint
-        self.image.mouseReleaseEvent = self.setSecondPoint
-        self.image.mouseDoubleClickEvent = self.deselectPoints
+
+        self.image = ImageLabel()
+
         overall_layout.addWidget(self.image)
         
         overall_layout.addLayout(bottom_layout)
@@ -90,6 +136,7 @@ class Mainwindow(QMainWindow):
         self.frame.setSingleStep(1)
         self.frame.setButtonSymbols(QSpinBox.NoButtons)
         self.frame.setValue(1)
+        self.frame.setKeyboardTracking(False)
         self.frame.valueChanged.connect(self.changeFrame)
 
         button_left = QPushButton("Anterior")
@@ -101,25 +148,9 @@ class Mainwindow(QMainWindow):
         bottom_layout.addWidget(button_left)
         bottom_layout.addWidget(self.frame)
         bottom_layout.addWidget(button_right)
-
-    def deselectPoints(self,event):
-        self.point_one=None
-        self.point_two=None
-
-    def getEventPoints(self,event):
-        x = event.pos().x()
-        y = event.pos().y()
-        return x, y
-    def setFirstPoint(self, event):
-        x,y = self.getEventPoints(event)
-        self.point_one = (x,y)
-        print(self.point_one)
-
-    def setSecondPoint(self, event):
-        x,y = self.getEventPoints(event)
-        self.point_two = (x,y)
-        print(self.point_two)
-        #TODO crear cuadrado en imagen transparente que cubra la zona seleccionada
+    
+    def dummy_function(self,event):
+        print(event)
 
 
     def changeFrameBackward(self):
@@ -133,10 +164,9 @@ class Mainwindow(QMainWindow):
         frame, value = data
         height, width, channels = frame.shape
         bytesPerLine = 3 * width                                       
-        self.q_img = QImage(frame.data, width, height, bytesPerLine,QImage.Format_RGB888)
-        q_pix = QPixmap(self.q_img)
+        q_img = QImage(frame.data, width, height, bytesPerLine,QImage.Format_RGB888)
+        self.image.setFrame(q_img)
         self.frame.blockSignals(True)
-        self.image.setPixmap(q_pix)
         self.frame.setValue(value)
         self.frame.blockSignals(False)
         
@@ -161,8 +191,7 @@ class Mainwindow(QMainWindow):
         return
 
     def changeFrame(self, value):
-        if value != self.frame.value(): 
-            settings.process_queue.put((ef.requestFrame,value,0))
+        settings.process_queue.put((ef.requestFrame,value,0))
 
     def sendFileOpenedSignal(self, file_name):
         settings.process_queue.put((ef.openVideo,file_name, 0))
