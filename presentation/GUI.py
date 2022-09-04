@@ -1,3 +1,4 @@
+from re import A
 import settings
 import event_functions as ef
 import cv2
@@ -14,6 +15,8 @@ class ImageLabel(QWidget):
         self.point_one = None
         self.point_two = None
         self.image = None
+        self.w=0
+        self.h=0
         self.canvas = QLabel("No se ha abierto un video")
         self.canvas.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
         self.canvas.mousePressEvent = self.setFirstPoint
@@ -56,6 +59,23 @@ class ImageLabel(QWidget):
     def setFrame(self,image):
         q_pix = QPixmap(image)
         self.canvas.setPixmap(q_pix)
+
+    def setVideoData(self, width,heigth):
+        self.w = width
+        self.h = heigth
+
+    def getSelectedBorder(self):
+        if self.point_one is None or self.point_two is None:
+            selection= (self.h,0,0,self.w)
+        else:
+            x = (self.point_one[0],self.point_two[0])
+            y = (self.point_one[1],self.point_two[1])
+            selection = (max(y),min(x),min(y),max(x))
+        self.point_one = None
+        self.point_two = None
+        return selection
+        
+        #TODO hacer que cuando se habra un archivo se le de a este objeto sus dimensiones
         
 
 class Mainwindow(QMainWindow):
@@ -171,10 +191,11 @@ class Mainwindow(QMainWindow):
         self.frame.blockSignals(False)
         
     def setVideoData(self, data):
-        minimum, maximun = data
+        minimum, maximun, width, height = data
         self.frame.setMinimum(minimum)
         self.frame.setMaximum(maximun)
         self.int_frames.setLimits(minimum,maximun)
+        self.image.setVideoData(width,height)
 
         
 
@@ -212,8 +233,9 @@ class Mainwindow(QMainWindow):
         data["device"] = self.device_option.getValue()
         data["inbetweens"] = self.n_option.getValue()
         data["frames"]= self.int_frames.getValue()
-        data["area"]=(None,None,None,None) #(down,left,up,right) TODO agarrar datos
-        settings.process_queue.put((ef.interpolate,data, -1))
+        data["area"]=self.image.getSelectedBorder()#(None,None,None,None) #(down,left,up,right) TODO agarrar datos
+        print(data)
+        #settings.process_queue.put((ef.interpolate,data, -1))
 
     
     

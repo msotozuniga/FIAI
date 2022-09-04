@@ -43,7 +43,9 @@ class VideoManager:
         self.capturer = cap
         self.fps = cap.get(cv2.CAP_PROP_FPS)
         self.frame_count = cap.get(cv2.CAP_PROP_FRAME_COUNT)
-        return (0, self.frame_count)
+        width  = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH ))   # float `width`
+        height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))  # float `height`
+        return (0, self.frame_count, width,height)
 
     def generate_frames(self, lower_left, upper_right, frame_start, frame_end, frames_to_create):
         '''
