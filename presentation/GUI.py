@@ -66,11 +66,11 @@ class ImageLabel(QWidget):
 
     def getSelectedBorder(self):
         if self.point_one is None or self.point_two is None:
-            selection= (self.h,0,0,self.w)
+            selection= (0,self.ww,0,self.h)
         else:
             x = (self.point_one[0],self.point_two[0])
             y = (self.point_one[1],self.point_two[1])
-            selection = (max(y),min(x),min(y),max(x))
+            selection = (min(x),max(x),min(y),max(y))
         self.point_one = None
         self.point_two = None
         return selection
@@ -182,6 +182,9 @@ class Mainwindow(QMainWindow):
 
     def setFrame(self, data):
         frame, value = data
+        if value == -1:
+            print("Valor incorrecto")
+            return
         height, width, channels = frame.shape
         bytesPerLine = 3 * width                                       
         q_img = QImage(frame.data, width, height, bytesPerLine,QImage.Format_RGB888)
@@ -233,9 +236,8 @@ class Mainwindow(QMainWindow):
         data["device"] = self.device_option.getValue()
         data["inbetweens"] = self.n_option.getValue()
         data["frames"]= self.int_frames.getValue()
-        data["area"]=self.image.getSelectedBorder()#(None,None,None,None) #(down,left,up,right) TODO agarrar datos
-        print(data)
-        #settings.process_queue.put((ef.interpolate,data, -1))
+        data["area"]=self.image.getSelectedBorder()#(left,right,up,down) TODO agarrar datos
+        settings.process_queue.put((ef.interpolate,data, -1))
 
     
     

@@ -12,14 +12,14 @@ class Extractor:
         self.path_initial = dir_path + '\\temp\\initial.npy'
         self.path_final = dir_path + '\\temp\\final.npy'
 
-    def extract_frames(self, cap, left, right, lower, upper, frame_start, frame_end):
+    def extract_frames(self, cap, left, right, upper, lower, frame_start, frame_end):
         '''
         Removes the desire segment of video
         :param cap: Video capturer
         :param lower_left: Lower left pixel of segment
         :param upper_right: Upper right pixel of segment
         :param frame_start: Starting frame of segment
-        :param frame_end: Ending frame of segmente (not included)
+        :param frame_end: Ending frame of segment (not included)
         '''
         frames_to_read = frame_end - frame_start
         frames = []
@@ -30,7 +30,7 @@ class Extractor:
                 break
             frames.append(frame)
         frames = np.stack(frames)
-        pieces = frames[:, left:right, lower:upper]
+        pieces = frames[:, left:right, upper:lower]
         return pieces, frames
 
 

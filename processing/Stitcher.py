@@ -24,5 +24,7 @@ class Stitcher:
         original = np.copy(frames)
         frames[:, left:right, lower:upper] = 0
         frames[1:, left:right, lower:upper] += pieces
+        if os.path.isfile(self.path_temp):
+            os.remove(self.path_temp)
         return frames, original
 

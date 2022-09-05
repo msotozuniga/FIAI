@@ -47,20 +47,17 @@ class VideoManager:
         height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))  # float `height`
         return (0, self.frame_count, width,height)
 
-    def generate_frames(self, lower_left, upper_right, frame_start, frame_end, frames_to_create):
+    def generate_frames(self,left, right, up, down, frame_start, frame_end, frames_to_create):
         '''
         frames = self.video[frame_start: frame_end]
         original = frames.copy()
         '''
-        left = lower_left[0]
-        right = upper_right[0]
-        lower = lower_left[1]
-        upper = upper_right[1]
 
-        pieces , frames = self.extractor.extract_frames(self.capturer, left,right,lower,upper, frame_start, frame_end)
+        pieces , frames = self.extractor.extract_frames(self.capturer, left,right,up,down, frame_start, frame_end)
         self.stitcher.save_frames(frames)
-        interpolation = self.model.interpolate(pieces, right - left, upper - lower, frames_to_create)
-        results, original= self.stitcher.stitch(interpolation,left,right,lower,upper)
+        del frames
+        interpolation = self.model.interpolate(pieces, right - left, down - up, frames_to_create)
+        results, original= self.stitcher.stitch(interpolation,left,right,down,up)
         return results, original
 
 
@@ -91,8 +88,10 @@ class VideoManager:
         if device != self.model.device_system:
             self.model.to_device(device)
         n = data["inbetweens"]
-        piece = data["frames"]
-        down,left,up,right = data["area"]
+        frame_start, frame_end = data["frames"]
+        left,right,up,down = data["area"]
+        result, original = self.generate_frames(left,right,up,down,frame_start,frame_end,n)
+        
 
         
 
@@ -106,7 +105,7 @@ class VideoManager:
         self.capturer.set(cv2.CAP_PROP_POS_FRAMES,value)
         ret, frame = self.capturer.read()
         if not ret:
-            print("not ret") #TODO avisar que el valor es incorrecto
+            return (None,-1)
         cv2.cvtColor(frame,cv2.COLOR_BGR2RGB, frame)
         return (frame,value)
 
