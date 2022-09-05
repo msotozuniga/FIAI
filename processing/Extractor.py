@@ -19,9 +19,9 @@ class Extractor:
         :param lower_left: Lower left pixel of segment
         :param upper_right: Upper right pixel of segment
         :param frame_start: Starting frame of segment
-        :param frame_end: Ending frame of segment (not included)
+        :param frame_end: Ending frame of segment 
         '''
-        frames_to_read = frame_end - frame_start
+        frames_to_read = frame_end - frame_start +1 
         frames = []
         cap.set(cv2.CAP_PROP_POS_FRAMES,frame_start)
         for i in range(frames_to_read):
@@ -30,7 +30,7 @@ class Extractor:
                 break
             frames.append(frame)
         frames = np.stack(frames)
-        pieces = frames[:, left:right, upper:lower]
+        pieces = frames[:, upper:lower,left:right]
         return pieces, frames
 
 

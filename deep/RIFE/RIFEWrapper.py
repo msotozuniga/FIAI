@@ -98,6 +98,7 @@ class RIFEWrapper(ModelWrapperAbstract):
         padding = (0, pw - w, 0, ph - h)
         exit = []  # [frames[0].numpy()]#
         for i in tqdm(range(len(frames) - 1)):
+            exit.append(frames[i])
             I0 = torch.from_numpy(np.transpose(frames[i], (2, 0, 1)).copy()).to(self.device_system,
                                                                          non_blocking=True).unsqueeze(0).float() / 255.
             I0 = F.pad(I0, padding)
@@ -114,19 +115,31 @@ class RIFEWrapper(ModelWrapperAbstract):
                 for i in range(intermediates_frames):
                     output.append((((I0[0] * 255.).byte().cpu().numpy().transpose(1, 2, 0))))
             else:
-                output = self.make_inference(I0, I1, intermediates_frames)
-            exit.append(*output)
+                output = self.make_inference(I0, I1, intermediates_frames,w,h)
+            exit.extend(output)
             # output.append(frames[i+1].numpy())
+        exit.append(frames[-1])
         set = np.stack(exit)
-        set = set[:, :h, :w, ::-1]
+        set = set[:, :, :, ::-1]
         return set
 
-    def make_inference(self, I0, I1, n):
+
+    def depad_tensor(self, tensor,pad_width=0,pad_height=0):
+        if pad_width == 0 and pad_height ==0:
+            return tensor
+        elif pad_width != 0 and pad_height ==0:
+            return tensor[:,:-1*pad_width,:]
+        elif pad_width == 0 and pad_height !=0:
+            return tensor[:,:,:-1*pad_height]
+        else:
+            return tensor[:,:-1*pad_width,:-1*pad_height]
+        
+    def make_inference(self, I0, I1, n,h,w):
         middle = self.model.inference(I0, I1)
         if n == 1:
-            return [(((middle[0] * 255.).byte().cpu().numpy().transpose(1, 2, 0)))]
-        first_half = self.make_inference(I0, middle, n=n//2)
-        second_half = self.make_inference(middle, I1, n=n//2)
+            return [(((middle[0][:,:h,:w] * 255.).byte().cpu().numpy().transpose(1, 2, 0)))]
+        first_half = self.make_inference(I0, middle, n//2,h,w)
+        second_half = self.make_inference(middle, I1, n//2,h,w)
         if n%2:
             return [*first_half, middle, *second_half]
         else:
