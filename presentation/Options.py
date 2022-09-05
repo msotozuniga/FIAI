@@ -51,16 +51,18 @@ class OptionRange(QWidget):
         sub_layout = QHBoxLayout()
         global_layout.addLayout(sub_layout)
 
-        self.bottom_frame = QSpinBox()
+        self.bottom_frame = QSpinBox() # que no escuchen cambios asta presionar start
         self.bottom_frame.setMinimum(1) 
         self.bottom_frame.setMaximum(11) 
         self.bottom_frame.setSingleStep(1)
+        self.bottom_frame.setKeyboardTracking(False)
         self.bottom_frame.valueChanged.connect(self.bottom_value_changed)
 
-        self.top_frame = QSpinBox()
+        self.top_frame = QSpinBox()# que no escuchen cambios asta presionar start
         self.top_frame.setMinimum(1) 
         self.top_frame.setMaximum(11) 
         self.top_frame.setSingleStep(1)
+        self.top_frame.setKeyboardTracking(False)
         self.top_frame.valueChanged.connect(self.top_value_changed)
 
         sub_layout.addWidget(self.bottom_frame)

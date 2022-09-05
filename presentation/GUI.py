@@ -66,7 +66,7 @@ class ImageLabel(QWidget):
 
     def getSelectedBorder(self):
         if self.point_one is None or self.point_two is None:
-            selection= (0,self.ww,0,self.h)
+            selection= (0,self.w,0,self.h)
         else:
             x = (self.point_one[0],self.point_two[0])
             y = (self.point_one[1],self.point_two[1])

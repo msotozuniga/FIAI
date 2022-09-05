@@ -93,13 +93,6 @@ class VideoManager:
         result, original = self.generate_frames(left,right,up,down,frame_start,frame_end,n)
         
 
-        
-
-
-        print("interpolating")
-        print(data)
-        return
-
     def get_frame(self,value):
         #TODO Hacer que funcione cuando se coloquen otros frames
         self.capturer.set(cv2.CAP_PROP_POS_FRAMES,value)
