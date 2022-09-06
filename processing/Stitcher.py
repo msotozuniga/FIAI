@@ -20,11 +20,14 @@ class Stitcher:
         np.save(self.path_temp, frames)
 
 
-    def stitch(self, pieces, left, right, lower, upper):
-        frames = np.load(self.path_temp)
+    def stitch(self, pieces, left, right, lower, upper, n_frames):
+        '''
+        Pieces: (n,h,w,c)
+        '''
+        frames = np.load(self.path_temp) #usar repear en dim 0 para llegar al limite
+        frames = np.repeat(frames,n_frames+1,axis=0)[:-1*n_frames]
         original = np.copy(frames)
-        frames[:, upper:lower, left:right] = 0
-        frames[1:, upper:lower, left:right] += pieces
+        frames[:, upper:lower, left:right] = pieces
         if os.path.isfile(self.path_temp):
             os.remove(self.path_temp)
         return frames, original

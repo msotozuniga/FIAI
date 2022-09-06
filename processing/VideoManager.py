@@ -57,7 +57,7 @@ class VideoManager:
         self.stitcher.save_frames(frames)
         del frames
         interpolation = self.model.interpolate(pieces, right - left, down - up, frames_to_create)
-        results, original= self.stitcher.stitch(interpolation,left,right,down,up)
+        results, original= self.stitcher.stitch(interpolation,left,right,down,up,frames_to_create)
         return results, original
 
 
