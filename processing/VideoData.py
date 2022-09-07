@@ -46,8 +46,8 @@ class VideoInterval(IntervalAbstract):
 
     def get_frame(self,value):
         firs_pos = value-self.g_l+self.i_l
-        self.capturer.set(cv.CAP_PROP_POS_FRAMES,firs_pos)
-        ret, frame = self.capturer.read()
+        self.cap.set(cv.CAP_PROP_POS_FRAMES,firs_pos)
+        ret, frame = self.cap.read()
         if not ret:
             return (None,-1)
         cv.cvtColor(frame,cv.COLOR_BGR2RGB, frame)
@@ -80,7 +80,7 @@ class GroupInterval(IntervalAbstract):
         firs_pos = value-self.g_l+self.i_l
         frame = frames[firs_pos]
         cv.cvtColor(frame,cv.COLOR_BGR2RGB, frame)
-        return (frame,value)
+        return frame
         
 
 
@@ -103,7 +103,7 @@ class Videodata:
         self.frame_count = cap.get(cv.CAP_PROP_FRAME_COUNT)
         self.width  = int(cap.get(cv.CAP_PROP_FRAME_WIDTH ))   # float `width`
         self.height = int(cap.get(cv.CAP_PROP_FRAME_HEIGHT))
-        interval = VideoInterval(0,self.frame_count,0,self.frame_count)
+        interval = VideoInterval(0,self.frame_count,0,self.frame_count,self.capturer)
         self.frame_map.append(interval)
 
     def get_video_data(self):
@@ -112,7 +112,8 @@ class Videodata:
     def get_frame(self,value):
         for node in self.frame_map:
             if node.g_l <= value<  node.g_r:
-                return node.get_frame(value) 
+                return node.get_frame(value)
+        return (None,-1)
 
 
     def get_frames():

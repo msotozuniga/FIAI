@@ -4,27 +4,26 @@ import cv2
 import numpy as np
 import cv2 as cv #cambiar de cv a pims
 import gc
+from deep.ModelWrapperAbstract import ModelWrapperAbstract
 import settings
 import event_functions as ef
 from deep.RIFE.RIFEWrapper import RIFEWrapper
 from deep.SoftSplat.SoftSplatWrapper import SoftSplatWrapper
 from processing.Extractor import Extractor
 from processing.Stitcher import Stitcher
+from processing.VideoData import Videodata
 
 
 
 class VideoManager:
+    
 
     def __init__(self):
         self.model = RIFEWrapper()
-        dir_path = os.path.dirname(os.path.realpath(__file__))
-        self.path_initial = dir_path + '\\temp\\initial.npy'
-        self.path_final = dir_path + '\\temp\\final.npy'
         self.extractor = Extractor()
         self.capturer = None
         self.stitcher = Stitcher()
-        self.fps = None
-        self.frame_count = None
+        self.video = Videodata()
     
     def change_model(self, model_id):
         device= self.model.device_system
@@ -41,11 +40,8 @@ class VideoManager:
         '''
         cap = cv.VideoCapture(video)
         self.capturer = cap
-        self.fps = cap.get(cv2.CAP_PROP_FPS)
-        self.frame_count = cap.get(cv2.CAP_PROP_FRAME_COUNT)
-        width  = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH ))   # float `width`
-        height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))  # float `height`
-        return (0, self.frame_count, width,height)
+        self.video.open_video(video)
+        return self.video.get_video_data()
 
     def generate_frames(self,left, right, up, down, frame_start, frame_end, frames_to_create):
         '''
@@ -59,18 +55,6 @@ class VideoManager:
         interpolation = self.model.interpolate(pieces, right - left, down - up, frames_to_create)
         results, original= self.stitcher.stitch(interpolation,left,right,down,up,frames_to_create)
         return results, original
-
-
-    def save_rest(self, frame_start, frame_end):
-        #Usar un compressor
-        initial = self.video[0:frame_start]
-        final = self.video[frame_end + 1:-1]
-        with open(self.path_initial, 'wb') as f:
-            np.savez_compressed(f, initial)
-        with open(self.path_final, 'wb') as f:
-            np.savez_compressed(f, final)
-        del self.video
-        gc.collect()
 
     def save_video():
         print("Saving video")
@@ -91,6 +75,7 @@ class VideoManager:
         frame_start, frame_end = data["frames"]
         left,right,up,down = data["area"]
         result, original = self.generate_frames(left,right,up,down,frame_start,frame_end,n)
+        #TODO guardar resultado y depositarlo en mapa de frames
         frame = result[1]
         cv2.cvtColor(frame,cv2.COLOR_BGR2RGB, frame)
         return (frame, frame_start)
@@ -98,10 +83,5 @@ class VideoManager:
 
     def get_frame(self,value):
         #TODO Hacer que funcione cuando se coloquen otros frames
-        self.capturer.set(cv2.CAP_PROP_POS_FRAMES,value)
-        ret, frame = self.capturer.read()
-        if not ret:
-            return (None,-1)
-        cv2.cvtColor(frame,cv2.COLOR_BGR2RGB, frame)
-        return (frame,value)
+        return self.video.get_frame(value)
 
