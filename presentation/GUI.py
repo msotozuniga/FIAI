@@ -237,7 +237,7 @@ class Mainwindow(QMainWindow):
         data["inbetweens"] = self.n_option.getValue()
         data["frames"]= self.int_frames.getValue()
         data["area"]=self.image.getSelectedBorder()#(left,right,up,down) TODO agarrar datos
-        settings.process_queue.put((ef.interpolate,data, -1))
+        settings.process_queue.put((ef.interpolate,data, 0))
 
     
     

@@ -10,8 +10,10 @@ def saveVideo(window,manager,message):
     manager.save_video()
     return
 
-def interpolate(manager, data):
-    manager.interpolate(data)
+def interpolate(window,manager, data):
+    data = manager.interpolate(data)
+    responseFrame(window,data)
+
 
 def openVideo(window, manager,file_name):
     data = manager.open_video(file_name)

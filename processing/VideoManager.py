@@ -91,6 +91,9 @@ class VideoManager:
         frame_start, frame_end = data["frames"]
         left,right,up,down = data["area"]
         result, original = self.generate_frames(left,right,up,down,frame_start,frame_end,n)
+        frame = result[1]
+        cv2.cvtColor(frame,cv2.COLOR_BGR2RGB, frame)
+        return (frame, frame_start)
         
 
     def get_frame(self,value):
