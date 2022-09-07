@@ -120,7 +120,7 @@ class RIFEWrapper(ModelWrapperAbstract):
             # output.append(frames[i+1].numpy())
         exit.append(frames[-1])
         set = np.stack(exit)
-        set = set[:, :, :, ::-1]
+        set = set[:-1, :, :, ::-1]
         return set
 
 
