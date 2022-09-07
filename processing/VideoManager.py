@@ -49,7 +49,7 @@ class VideoManager:
         original = frames.copy()
         '''
 
-        pieces , frames = self.extractor.extract_frames(self.capturer, left,right,up,down, frame_start, frame_end)
+        pieces , frames = self.video.extract_frames(left,right,up,down,frame_start, frame_end)
         self.stitcher.save_frames(frames)
         del frames
         interpolation = self.model.interpolate(pieces, right - left, down - up, frames_to_create)

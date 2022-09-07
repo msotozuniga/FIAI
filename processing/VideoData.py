@@ -116,5 +116,30 @@ class Videodata:
         return (None,-1)
 
 
-    def get_frames():
-        pass
+    def extract_frames(self, left,right,up,down, frame_start, frame_end):
+        l = frame_start
+        r = frame_end
+        extracted_pieces =[]
+        extracted_frames =[]
+        for node in self.frame_map:
+            l_check = node.g_l <= l <  node.g_r
+            if l_check and r < node.g_r:
+                pieces, frames = node.extract_frames(left, right, up, down, l, r)
+                extracted_pieces.append(pieces)
+                extracted_frames.append(frames)
+                break
+            elif l_check and node.g_r <= r:
+                pieces, frames = node.extract_frames(left, right, up, down, l, node.g_r)
+                extracted_pieces.append(pieces)
+                extracted_frames.append(frames)
+                l=node.g_r
+            elif node.g_r <= l:
+                continue
+            else:
+                raise NameError("Ocurrio un error en extractor: el borde izquierdo resulto menor que algun izquierdo global de un nono")
+        todas_pieces = np.concatenate(extracted_pieces,axis=0)
+        todas_frames = np.concatenate(extracted_frames,axis=0)
+        return todas_pieces, todas_frames
+
+
+
