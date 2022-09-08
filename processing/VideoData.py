@@ -80,6 +80,13 @@ class Videodata:
         self.fps = None
         self.frame_count = None
         self.frame_map = []
+        self.width = None
+        self.height = None
+        self.dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),"temp")
+        self.map_path = os.path.join(self.dir_path,"map.bn")
+        self.path_temp = os.path.join(self.dir_path,"temp.npy")
+        if not os.path.exists(self.dir_path):
+            os.makedirs(self.dir_path)
 
     def open_video(self, video):
         '''
@@ -95,11 +102,6 @@ class Videodata:
         frame_map = []
         for frame_id in range(int(self.frame_count)):
             frame_map.append(VideoFrame(frame_id))
-        self.dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),"temp")
-        if not os.path.exists(self.dir_path):
-            os.makedirs(self.dir_path)
-        self.map_path = os.path.join(self.dir_path,"map.bn")
-        self.path_temp = os.path.join(self.dir_path,"temp.npy")
         self.frame_map = frame_map
 
     def get_video_data(self):
@@ -127,6 +129,21 @@ class Videodata:
     def load_map(self):
         with open(self.map_path, "rb") as fp:   #Pickling
             self.frame_map = pickle.load(fp)
+        if os.path.isfile(self.map_path):
+            os.remove(self.map_path)
+        
+
+    def clear_data(self):
+        if self.frame_map == None:
+            return
+        for element in self.frame_map:
+            if type(element) is StubFrame:
+                file = element.file_name
+                if os.path.isfile(file):
+                    os.remove(file)
+        self.__init__()
+                
+
 
 
     

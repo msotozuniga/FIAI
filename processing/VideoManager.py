@@ -20,9 +20,6 @@ class VideoManager:
 
     def __init__(self):
         self.model = RIFEWrapper()
-        self.extractor = Extractor()
-        self.capturer = None
-        self.stitcher = Stitcher()
         self.video = Videodata()
     
     def change_model(self, model_id):
@@ -38,9 +35,10 @@ class VideoManager:
         Set the video to work on
         :param video: Video path
         '''
-        cap = cv.VideoCapture(video)
-        self.capturer = cap
         self.video.open_video(video)
+        return self.get_video_data()
+
+    def get_video_data(self):
         return self.video.get_video_data()
 
     def generate_frames(self,left, right, up, down, frame_start, frame_end, frames_to_create):
@@ -59,13 +57,12 @@ class VideoManager:
         #TODO enviar datos a GUI sobre la nueva cantidad de frames totales
         return data
 
-    def save_video():
+    def save_video(self):
         print("Saving video")
         return
 
-    def clear_cache():
-        print("Clearing cache")
-        return
+    def clear_cache(self):
+        self.video.clear_data()
 
     def interpolate(self,data):
         model_id = data["model"]
