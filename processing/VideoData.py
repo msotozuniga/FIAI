@@ -116,6 +116,9 @@ class Videodata:
             data = frame.get_frame()
         return data, value
 
+    def delete_frame(self,value):
+        self.frame_map.pop(value)
+
     def save_map(self):
         with open(self.map_path, "wb") as fp:   #Pickling
             pickle.dump(self.frame_map, fp)

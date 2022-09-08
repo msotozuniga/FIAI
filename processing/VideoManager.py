@@ -56,6 +56,7 @@ class VideoManager:
         result = self.video.stitch(interpolation,left,right,down,up,frames_to_create)
         self.video.load_map()
         data = self.video.add_frames(result,frame_start,frame_end)
+        #TODO enviar datos a GUI sobre la nueva cantidad de frames totales
         return data
 
     def save_video():
@@ -83,4 +84,9 @@ class VideoManager:
 
     def get_frame(self,value):
         return self.video.get_frame(value)
+
+    def delete_frame(self,value):
+        self.video.delete_frame(value)
+        return self.video.get_frame(value)
+
 
