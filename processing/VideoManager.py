@@ -57,9 +57,9 @@ class VideoManager:
         #TODO enviar datos a GUI sobre la nueva cantidad de frames totales
         return data
 
-    def save_video(self):
-        print("Saving video")
-        return
+    def save_video(self,data):
+        filename,override = data
+        self.video.save_video(filename,override)
 
     def clear_cache(self):
         self.video.clear_data()

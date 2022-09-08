@@ -84,7 +84,7 @@ class Mainwindow(QMainWindow):
         self.setWindowTitle("FIAI")
         self.createMenu()
         self.createWidget()
-
+        self.file_name = None
         self.setMinimumSize(720, 480)
         self.setMaximumSize(1920,1080)
     
@@ -97,7 +97,7 @@ class Mainwindow(QMainWindow):
         open_action = QAction("Abrir archivo", self)
         open_action.triggered.connect(self.openFile)
         save_action = QAction("guardar archivo", self)
-        save_action.triggered.connect(self.sendFileSavedSignal)
+        save_action.triggered.connect(self.saveFile)
         close_action = QAction("Cerrar archivo", self)
         close_action.triggered.connect(self.close)
         file_menu.addAction(open_action)
@@ -159,6 +159,7 @@ class Mainwindow(QMainWindow):
         self.frame.setKeyboardTracking(False)
         self.frame.valueChanged.connect(self.changeFrame)
 
+
         button_left = QPushButton("Anterior")
         button_left.clicked.connect(self.changeFrameBackward)
 
@@ -169,9 +170,6 @@ class Mainwindow(QMainWindow):
         bottom_layout.addWidget(self.frame)
         bottom_layout.addWidget(button_right)
     
-    def dummy_function(self,event):
-        print(event)
-
 
     def changeFrameBackward(self):
         self.changeFrame(self.frame.value()-1)
@@ -208,6 +206,19 @@ class Mainwindow(QMainWindow):
                                        "Video (*.avi *.mp4)")
         if file_name[0] != '':
             self.sendFileOpenedSignal(file_name[0])
+            self.file_name = file_name[0]
+
+    def saveFile(self):
+        file_name = QFileDialog.getSaveFileName(self,"Save File",self.file_name,
+                                       "AVI (*.avi);;Mp4 (*.mp4)")
+        if file_name[0] == '':
+            return
+        override=False
+        if file_name[0]==self.file_name:
+            override = True
+            print("Se sobreescribirá el archivo")
+        self.sendFileSavedSignal(file_name[0], override)
+
 
 
     def closeEvent(self, event):
@@ -223,8 +234,8 @@ class Mainwindow(QMainWindow):
         
         
     
-    def sendFileSavedSignal(self):
-        settings.process_queue.put((ef.saveVideo,None, 0))
+    def sendFileSavedSignal(self,filename,override):
+        settings.process_queue.put((ef.saveVideo,(filename,override), 0))
         
 
     def sendFileClosedSignal(self):

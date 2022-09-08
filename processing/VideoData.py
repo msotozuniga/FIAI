@@ -206,6 +206,37 @@ class Videodata:
         self.frame_count = self.frame_count + frames_added - (frame_end-frame_start)
         return result[1], frame_start+1
 
+    def save_video(self,filename,override):
+        path_to_save = filename
+
+        if override:
+            filename, file_extension = os.path.splitext(filename)
+            temporal_file = "temp."+file_extension
+            path_to_save = os.path.join(self.dir_path,temporal_file)
+        video = cv.VideoWriter(path_to_save,cv.VideoWriter_fourcc(*'mp4v'), self.fps, (self.width,self.height))
+        for i in range(int(self.frame_count)):
+            frame , value = self.get_frame(i)
+            cv.cvtColor(frame,cv.COLOR_RGB2BGR, frame)
+            if value>=0:
+                video.write(frame)
+        video.release()
+        print("Finaliza el guardado")
+        #TODO cambiar nombre si se estaba sobreescribiendo
+
+        
+        ''' 
+        # Write all the frames sequentially to the new video
+        for v in videos:
+            curr_v = cv2.VideoCapture(v)
+            while curr_v.isOpened():
+                r, frame = curr_v.read()    # Get return value and curr frame of curr video
+                if not r:
+                    break
+                video.write(frame)          # Write the frame
+        '''
+          
+        
+
     @staticmethod
     def save_frames(path, frames):
         np.save(path, frames)

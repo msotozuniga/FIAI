@@ -6,7 +6,7 @@ def closeProgram(window, manager, message):
     manager.clear_cache()
 
 def saveVideo(window,manager,message):
-    manager.save_video()
+    manager.save_video(message)
 
 def interpolate(window,manager, data):
     data = manager.interpolate(data)
