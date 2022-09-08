@@ -99,7 +99,7 @@ class Mainwindow(QMainWindow):
         save_action = QAction("guardar archivo", self)
         save_action.triggered.connect(self.sendFileSavedSignal)
         close_action = QAction("Cerrar archivo", self)
-        close_action.triggered.connect(self.closeFile)
+        close_action.triggered.connect(self.close)
         file_menu.addAction(open_action)
         file_menu.addAction(save_action)
         file_menu.addAction(close_action)
@@ -209,10 +209,11 @@ class Mainwindow(QMainWindow):
         if file_name[0] != '':
             self.sendFileOpenedSignal(file_name[0])
 
-    def closeFile(self):
+
+    def closeEvent(self, event):
         self.sendFileClosedSignal()
-        self.close()
-        return
+        event.accept() # let the window close
+        
 
     def changeFrame(self, value):
         settings.process_queue.put((ef.requestFrame,value,0))

@@ -136,11 +136,11 @@ class RIFEWrapper(ModelWrapperAbstract):
         
     def make_inference(self, I0, I1, n,h,w):
         middle = self.model.inference(I0, I1)
-        middle = (((middle[0][:,:h,:w] * 255.).byte().cpu().numpy().transpose(1, 2, 0)))
         if n == 1:
-            return [middle]
+            return [(((middle[0][:,:h,:w] * 255.).byte().cpu().numpy().transpose(1, 2, 0)))]
         first_half = self.make_inference(I0, middle, n//2,h,w)
         second_half = self.make_inference(middle, I1, n//2,h,w)
+        middle = (((middle[0][:,:h,:w] * 255.).byte().cpu().numpy().transpose(1, 2, 0)))
         if n%2:
             return [*first_half, middle, *second_half]
         else:
