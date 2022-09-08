@@ -69,7 +69,7 @@ class StubFrame(Frame):
         if frame_start ==None or frame_end ==None:
             return None,None
         frames = np.load(file_name)
-        frames = frames[frame_start:frame_end]
+        frames = frames[frame_start:frame_end+1]
         pieces = frames[:, upper:lower,left:right]
         return pieces, frames
 
