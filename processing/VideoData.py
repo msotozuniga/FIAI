@@ -31,7 +31,7 @@ class VideoFrame(Frame):
     @staticmethod
     def extract_frames(left, right, upper, lower, frame_start, frame_end,cap):
         if frame_start ==None or frame_end ==None:
-            return None,None
+            return None,None, True
         frames_to_read = frame_end - frame_start +1 
         frames = []
         cap.set(cv.CAP_PROP_POS_FRAMES,frame_start)
@@ -42,7 +42,7 @@ class VideoFrame(Frame):
             frames.append(frame)
         frames = np.stack(frames)
         pieces = frames[:, upper:lower,left:right]
-        return pieces, frames
+        return pieces, frames, False
         
 
 class StubFrame(Frame):
@@ -67,11 +67,11 @@ class StubFrame(Frame):
     @staticmethod
     def extract_frames(left, right, upper, lower, frame_start, frame_end,file_name):
         if frame_start ==None or frame_end ==None:
-            return None,None
+            return None,None, True
         frames = np.load(file_name)
         frames = frames[frame_start:frame_end+1]
         pieces = frames[:, upper:lower,left:right]
-        return pieces, frames
+        return pieces, frames, False
 
 class Videodata:
 
@@ -142,28 +142,30 @@ class Videodata:
 
     def extract_frames(self, left,right,up,down, frame_start, frame_end):
         #TODO: agarrar el tipo del primer frame
-        curr_obj = None
-        curr_add_on = self.capturer
-        curr_type = VideoFrame
-        curr_interval = [None,None]
+        curr_obj = self.frame_map[frame_start]
+        curr_type = type(curr_obj)
+        curr_add_on = curr_obj.file_name if curr_type is StubFrame else self.capturer
+        curr_interval = [curr_obj.i_frame,None]
         frames_sets =[]
         pieces_sets = []
         for i in range(frame_start,frame_end+1):
             element = self.frame_map[i]
             if not element.equal(curr_obj):
-                piece,frame =curr_type.extract_frames(left, right, up, down, curr_interval[0],curr_interval[1],curr_add_on)
-                pieces_sets.append(piece)
-                frames_sets.append(frame)
+                piece,frame, empty =curr_type.extract_frames(left, right, up, down, curr_interval[0],curr_interval[1],curr_add_on)
+                if not empty:
+                    pieces_sets.append(piece)
+                    frames_sets.append(frame)
                 curr_type = type(element)
                 curr_obj = element
                 curr_add_on = element.file_name if curr_type is StubFrame else self.capturer
                 curr_interval[0] = element.i_frame
             curr_interval[1]=element.i_frame
-        piece,frame =curr_type.extract_frames(left, right, up, down, curr_interval[0],curr_interval[1],curr_add_on) 
-        pieces_sets.append(piece)
-        frames_sets.append(frame)   
-        todas_pieces = np.concatenate(pieces_sets[1:],axis=0)
-        todas_frames = np.concatenate(pieces_sets[1:],axis=0)
+        piece,frame, empty =curr_type.extract_frames(left, right, up, down, curr_interval[0],curr_interval[1],curr_add_on) 
+        if not empty:
+            pieces_sets.append(piece)
+            frames_sets.append(frame)  
+        todas_pieces = np.concatenate(pieces_sets[:],axis=0)
+        todas_frames = np.concatenate(pieces_sets[:],axis=0)
         return todas_pieces,todas_frames
 
     def insert_frames(self, stub_name,frames_added, l,r):
