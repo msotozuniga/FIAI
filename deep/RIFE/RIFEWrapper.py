@@ -113,7 +113,7 @@ class RIFEWrapper(ModelWrapperAbstract):
             if ssim > 0.999 or ssim < 0.2:
                 output = []
                 for i in range(intermediates_frames):
-                    output.append((((I0[0] * 255.).byte().cpu().numpy().transpose(1, 2, 0))))
+                    output.append((((I0[0][:,:w,:h] * 255.).byte().cpu().numpy().transpose(1, 2, 0))))
             else:
                 output = self.make_inference(I0, I1, intermediates_frames,w,h)
             exit.extend(output)
