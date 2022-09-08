@@ -27,3 +27,9 @@ def requestFrame(window, manager,value):
 
 def responseFrame(window, data):
     window.setFrame(data)
+
+def deleteFrame(window,manager,value):
+    data = manager.delete_frame(value)
+    update_video_data = manager.get_video_data()
+    window.setVideoData(update_video_data)
+    responseFrame(window,data)

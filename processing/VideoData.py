@@ -120,6 +120,7 @@ class Videodata:
 
     def delete_frame(self,value):
         self.frame_map.pop(value)
+        self.frame_count-=1
 
     def save_map(self):
         with open(self.map_path, "wb") as fp:   #Pickling

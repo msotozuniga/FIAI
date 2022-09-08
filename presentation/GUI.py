@@ -159,6 +159,8 @@ class Mainwindow(QMainWindow):
         self.frame.setKeyboardTracking(False)
         self.frame.valueChanged.connect(self.changeFrame)
 
+        del_button = QPushButton("Borrar frame")
+        del_button.clicked.connect(self.sendDeleteFrameSignal)
 
         button_left = QPushButton("Anterior")
         button_left.clicked.connect(self.changeFrameBackward)
@@ -168,7 +170,10 @@ class Mainwindow(QMainWindow):
 
         bottom_layout.addWidget(button_left)
         bottom_layout.addWidget(self.frame)
+        bottom_layout.addWidget(del_button)
         bottom_layout.addWidget(button_right)
+
+    
     
 
     def changeFrameBackward(self):
@@ -250,6 +255,9 @@ class Mainwindow(QMainWindow):
         data["frames"]= self.int_frames.getValue()
         data["area"]=self.image.getSelectedBorder()#(left,right,up,down) TODO agarrar datos
         settings.process_queue.put((ef.interpolate,data, 0))
+
+    def sendDeleteFrameSignal(self):
+        settings.process_queue.put((ef.deleteFrame,self.frame.value(), 0))
 
     
     
