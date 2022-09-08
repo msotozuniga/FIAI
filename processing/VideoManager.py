@@ -48,13 +48,15 @@ class VideoManager:
         frames = self.video[frame_start: frame_end]
         original = frames.copy()
         '''
-
         pieces , frames = self.video.extract_frames(left,right,up,down,frame_start, frame_end)
-        self.stitcher.save_frames(frames)
+        self.video.save_frames(self.video.path_temp,frames)
+        self.video.save_map()
         del frames
         interpolation = self.model.interpolate(pieces, right - left, down - up, frames_to_create)
-        results, original= self.stitcher.stitch(interpolation,left,right,down,up,frames_to_create)
-        return results, original
+        result = self.video.stitch(interpolation,left,right,down,up,frames_to_create)
+        self.video.load_map()
+        data = self.video.add_frames(result,frame_start,frame_end)
+        return data
 
     def save_video():
         print("Saving video")
@@ -74,14 +76,11 @@ class VideoManager:
         n = data["inbetweens"]
         frame_start, frame_end = data["frames"]
         left,right,up,down = data["area"]
-        result, original = self.generate_frames(left,right,up,down,frame_start,frame_end,n)
-        #TODO guardar resultado y depositarlo en mapa de frames
-        frame = result[1]
+        frame, new_value = self.generate_frames(left,right,up,down,frame_start,frame_end,n)
         cv2.cvtColor(frame,cv2.COLOR_BGR2RGB, frame)
-        return (frame, frame_start)
+        return (frame, new_value)
         
 
     def get_frame(self,value):
-        #TODO Hacer que funcione cuando se coloquen otros frames
         return self.video.get_frame(value)
 
