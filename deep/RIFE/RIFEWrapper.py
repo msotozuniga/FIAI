@@ -123,16 +123,6 @@ class RIFEWrapper(ModelWrapperAbstract):
         set = set[:-1, :, :, ::-1]
         return set
 
-
-    def depad_tensor(self, tensor,pad_width=0,pad_height=0):
-        if pad_width == 0 and pad_height ==0:
-            return tensor
-        elif pad_width != 0 and pad_height ==0:
-            return tensor[:,:-1*pad_width,:]
-        elif pad_width == 0 and pad_height !=0:
-            return tensor[:,:,:-1*pad_height]
-        else:
-            return tensor[:,:-1*pad_width,:-1*pad_height]
         
     def make_inference(self, I0, I1, n,h,w):
         middle = self.model.inference(I0, I1)
