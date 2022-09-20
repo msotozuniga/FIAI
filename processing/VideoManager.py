@@ -4,13 +4,11 @@ import cv2
 import numpy as np
 import cv2 as cv #cambiar de cv a pims
 import gc
-from deep.ModelWrapperAbstract import ModelWrapperAbstract
 import settings
 import event_functions as ef
 from deep.RIFE.RIFEWrapper import RIFEWrapper
 from deep.SoftSplat.SoftSplatWrapper import SoftSplatWrapper
-from processing.Extractor import Extractor
-from processing.Stitcher import Stitcher
+from deep.BLURIFE.BLURIFEWrapper import BLURIFEWrapper
 from processing.VideoData import Videodata
 
 
@@ -28,6 +26,8 @@ class VideoManager:
             self.model =RIFEWrapper(device_system=device)
         elif model_id is 1:
             self.model = SoftSplatWrapper(device_system=device)
+        elif model_id is 2:
+            self.model = BLURIFEWrapper(device_system=device)
         
 
     def open_video(self, video):
@@ -47,6 +47,8 @@ class VideoManager:
         original = frames.copy()
         '''
         pieces , frames = self.video.extract_frames(left,right,up,down,frame_start, frame_end)
+        print(frame_start)
+        print(frame_end)
         self.video.save_frames(self.video.path_temp,frames)
         self.video.save_map()
         del frames

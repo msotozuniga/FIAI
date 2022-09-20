@@ -158,4 +158,5 @@ processing/temp/
 
 # Models
 deep\RIFE\flownet.pkl
+deep\BLURIFE\Blurife_gopro.pth
 test.py

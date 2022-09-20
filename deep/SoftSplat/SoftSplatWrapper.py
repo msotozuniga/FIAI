@@ -14,7 +14,7 @@ class SoftSplatWrapper(ModelWrapperAbstract):
 
     def load_model(self):
         path = "deep/SoftSplat"
-        self.model.load_state_dict(torch.load('{}/SOON.pht'.format(path),map_location=self.device_system))
+        self.model.load_state_dict(torch.load('{}/SOON.pht'.format(path),map_location=self.device_system)['model'])
 
 
     def interpolate(self, frames, h, w, intermediates_frames):

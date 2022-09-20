@@ -7,6 +7,34 @@ from PySide2.QtCore import *
 from PySide2.QtGui import *
 from PySide2.QtWidgets import *
 
+class HelpWindow(QWidget):
+
+    def __init__(self, parent):
+        super(HelpWindow,self).__init__()
+        layout = QVBoxLayout()
+
+        title = QLabel("Manual de usuario")
+        layout.addWidget(title)
+
+        label = QLabel("hola")
+        layout.addWidget(label)
+
+        del_button = QPushButton("Cerrar")
+        del_button.clicked.connect(self.close)
+        layout.addWidget(del_button)
+
+
+
+        self.setLayout(layout)
+        self.setWindowTitle("Manual de usuario")
+        self.setMinimumSize(500, 480)
+        self.caller = parent 
+
+    def closeEvent(self, event):
+        self.caller.w=None
+        event.accept() # let the window close
+
+
 class ImageLabel(QWidget):
 
     def __init__(self):
@@ -75,8 +103,6 @@ class ImageLabel(QWidget):
         self.point_two = None
         return selection
         
-        #TODO hacer que cuando se habra un archivo se le de a este objeto sus dimensiones
-        
 
 class Mainwindow(QMainWindow):
     def __init__(self):
@@ -85,8 +111,10 @@ class Mainwindow(QMainWindow):
         self.createMenu()
         self.createWidget()
         self.file_name = None
+        self.w =None
         self.setMinimumSize(720, 480)
-        self.setMaximumSize(1920,1080)
+        avGeom = QDesktopWidget().availableGeometry()
+        self.setGeometry(avGeom)
     
     def setController(self, controller):
         self.controller = controller
@@ -103,6 +131,10 @@ class Mainwindow(QMainWindow):
         file_menu.addAction(open_action)
         file_menu.addAction(save_action)
         file_menu.addAction(close_action)
+        help_menu = self.menu.addMenu("Ayuda")
+        open_man = QAction("Manual de usuario", self)
+        open_man.triggered.connect(self.showHelpWindow)
+        help_menu.addAction(open_man)
         self.setMenuBar(self.menu)
 
 
@@ -174,7 +206,13 @@ class Mainwindow(QMainWindow):
         bottom_layout.addWidget(button_right)
 
     
-    
+    def showHelpWindow(self):
+        if self.w is None:
+            self.w = HelpWindow(self)
+            self.w.show()
+        else:
+            self.w.close()  # Close window.
+            self.w = None  # Discard reference.
 
     def changeFrameBackward(self):
         self.changeFrame(self.frame.value()-1)
@@ -214,6 +252,8 @@ class Mainwindow(QMainWindow):
             self.file_name = file_name[0]
 
     def saveFile(self):
+        if not self.checkActive():
+            return
         file_name = QFileDialog.getSaveFileName(self,"Save File",self.file_name,
                                        "AVI (*.avi);;Mp4 (*.mp4)")
         if file_name[0] == '':
@@ -244,8 +284,8 @@ class Mainwindow(QMainWindow):
         
 
     def sendFileClosedSignal(self):
-        settings.process_queue.put((ef.closeProgram,"message", 0))
-        return
+        if self.checkActive:
+            settings.process_queue.put((ef.closeProgram,"message", 0))
 
     def sendInterpolationStartSignal(self):
         data = {}
@@ -253,11 +293,15 @@ class Mainwindow(QMainWindow):
         data["device"] = self.device_option.getValue()
         data["inbetweens"] = self.n_option.getValue()
         data["frames"]= self.int_frames.getValue()
-        data["area"]=self.image.getSelectedBorder()#(left,right,up,down) TODO agarrar datos
+        data["area"]=self.image.getSelectedBorder()
         settings.process_queue.put((ef.interpolate,data, 0))
 
     def sendDeleteFrameSignal(self):
         settings.process_queue.put((ef.deleteFrame,self.frame.value(), 0))
+
+    def checkActive(self):
+        return self.file_name != None
+
 
     
     
