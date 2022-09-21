@@ -14,9 +14,17 @@ class HelpWindow(QWidget):
         layout = QVBoxLayout()
 
         title = QLabel("Manual de usuario")
+        title.setAlignment(Qt.AlignHCenter | Qt.AlignTop)
         layout.addWidget(title)
 
-        label = QLabel("hola")
+        man = """Controles para imagen:\n 
+        click+drag: Seleccionar sección de vídeo \n 
+        doble click: Borrar selección\n
+
+        Si no hay una sección a interpolar se realizará con toda la imagen
+        """
+        label = QLabel(man)
+        label.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
         layout.addWidget(label)
 
         del_button = QPushButton("Cerrar")

@@ -95,7 +95,7 @@ class RIFEWrapper(ModelWrapperAbstract):
         tmp = 32
         ph = ((h - 1) // tmp + 1) * tmp
         pw = ((w - 1) // tmp + 1) * tmp
-        padding = (0, pw - w, 0, ph - h)
+        padding = ( 0, ph - h,0,pw - w)
         exit = []  # [frames[0].numpy()]#
         for i in tqdm(range(len(frames) - 1)):
             exit.append(frames[i])

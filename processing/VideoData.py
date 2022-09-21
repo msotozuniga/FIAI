@@ -186,7 +186,7 @@ class Videodata:
             pieces_sets.append(piece)
             frames_sets.append(frame)  
         todas_pieces = np.concatenate(pieces_sets[:],axis=0)
-        todas_frames = np.concatenate(pieces_sets[:],axis=0)
+        todas_frames = np.concatenate(frames_sets[:],axis=0)
         return todas_pieces,todas_frames
 
     def insert_frames(self, stub_name,frames_added, l,r):
