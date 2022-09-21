@@ -46,12 +46,14 @@ class ImageLabel(QWidget):
         self.w=0
         self.h=0
         self.canvas = QLabel("No se ha abierto un video")
-        self.canvas.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+        self.canvas.setAlignment(Qt.AlignLeft | Qt.AlignTop)
+        self.canvas.setScaledContents(False)
         self.canvas.mousePressEvent = self.setFirstPoint
         self.canvas.mouseReleaseEvent = self.setSecondPoint
         self.canvas.mouseDoubleClickEvent = self.deselectPoints
         self.timer = QTimer(self)
         self.timer.setSingleShot(True)
+        self.rubberBand = None
         app = QApplication.instance()
         self.double_click_interval = app.doubleClickInterval()
         layout.addWidget(self.canvas)
@@ -74,14 +76,20 @@ class ImageLabel(QWidget):
         if not self.timer.isActive():
             self.timer.start(self.double_click_interval)
         x,y = self.getEventPoints(event)
+        
         self.point_one = (x,y)
-        print(self.point_one)
+        self.origin = QPoint(x,y) + self.canvas.pos()
+        print(event.pos())
+        print(self.canvas.pos())
+        if not self.rubberBand:
+            self.rubberBand = QRubberBand(QRubberBand.Rectangle, self)
+        self.rubberBand.setGeometry(QRect(self.origin, QSize()))
+        self.rubberBand.show()
 
     def setSecondPoint(self, event):
         if not self.timer.isActive():
             x,y = self.getEventPoints(event)
             self.point_two = (x,y)
-            print(self.point_two)
             #TODO crear cuadrado en imagen transparente que cubra la zona seleccionada
 
     def setFrame(self,image):
@@ -102,6 +110,9 @@ class ImageLabel(QWidget):
         self.point_one = None
         self.point_two = None
         return selection
+
+    def mouseMoveEvent(self, event):
+        return self.rubberBand.setGeometry(QRect(self.origin, event.pos()))
         
 
 class Mainwindow(QMainWindow):
