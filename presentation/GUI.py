@@ -64,6 +64,7 @@ class ImageLabel(QWidget):
     def deselectPoints(self,event):
         self.point_one=None
         self.point_two=None
+        self.rubberBand.hide()
         print(self.point_one)
         print(self.point_two)
 
@@ -75,22 +76,20 @@ class ImageLabel(QWidget):
     def setFirstPoint(self, event):
         if not self.timer.isActive():
             self.timer.start(self.double_click_interval)
-        x,y = self.getEventPoints(event)
         
-        self.point_one = (x,y)
-        self.origin = QPoint(x,y) + self.canvas.pos()
-        print(event.pos())
-        print(self.canvas.pos())
+        self.point_one = event.pos()
+        self.origin = self.point_one + self.canvas.pos()
         if not self.rubberBand:
             self.rubberBand = QRubberBand(QRubberBand.Rectangle, self)
-        self.rubberBand.setGeometry(QRect(self.origin, QSize()))
-        self.rubberBand.show()
+            self.rubberBand.setGeometry(QRect(self.origin, QSize()))
+        
+        
 
     def setSecondPoint(self, event):
         if not self.timer.isActive():
-            x,y = self.getEventPoints(event)
-            self.point_two = (x,y)
-            #TODO crear cuadrado en imagen transparente que cubra la zona seleccionada
+            self.point_two = event.pos()
+        else:
+            self.rubberBand.hide()
 
     def setFrame(self,image):
         q_pix = QPixmap(image)
@@ -100,19 +99,27 @@ class ImageLabel(QWidget):
         self.w = width
         self.h = heigth
 
+
     def getSelectedBorder(self):
         if self.point_one is None or self.point_two is None:
             selection= (0,self.w,0,self.h)
         else:
-            x = (self.point_one[0],self.point_two[0])
-            y = (self.point_one[1],self.point_two[1])
-            selection = (min(x),max(x),min(y),max(y))
+            p_s_i, p_i_d = self.getRectangle(self.point_one,self.point_two)
+            selection = (p_s_i.x(),p_i_d.x(),p_s_i.y(),p_i_d.y())
         self.point_one = None
         self.point_two = None
         return selection
 
     def mouseMoveEvent(self, event):
-        return self.rubberBand.setGeometry(QRect(self.origin, event.pos()))
+        p_a, p_b = self.getRectangle(self.origin, event.pos())
+        self.rubberBand.setGeometry(QRect(p_a, p_b))
+        self.rubberBand.show()
+
+    @staticmethod
+    def getRectangle(point_a, point_b):
+        x = point_a.x(), point_b.x()
+        y = point_a.y(), point_b.y()
+        return QPoint(min(x),min(y)), QPoint(max(x),max(y))
         
 
 class Mainwindow(QMainWindow):
