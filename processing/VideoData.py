@@ -20,7 +20,7 @@ class VideoFrame(Frame):
     def __init__(self, internal_frame):
         super().__init__(internal_frame, 0)
 
-    def get_frame(self,cap):
+    def getFrame(self,cap):
         cap.set(cv.CAP_PROP_POS_FRAMES,self.i_frame)
         ret, frame = cap.read()
         if not ret:
@@ -51,7 +51,7 @@ class StubFrame(Frame):
         super().__init__(internal_frame, 1)
         self.file_name = filename
 
-    def get_frame(self):
+    def getFrame(self):
         frames = np.load(self.file_name)
         frame = frames[self.i_frame]
         cv.cvtColor(frame,cv.COLOR_BGR2RGB, frame)
@@ -88,7 +88,7 @@ class Videodata:
         if not os.path.exists(self.dir_path):
             os.makedirs(self.dir_path)
 
-    def open_video(self, video):
+    def openVideo(self, video):
         '''
         Set the video to work on
         :param video: Video path
@@ -104,37 +104,37 @@ class Videodata:
             frame_map.append(VideoFrame(frame_id))
         self.frame_map = frame_map
 
-    def get_video_data(self):
+    def getVideoData(self):
         return (0, self.frame_count, self.width ,self.height)
 
-    def get_frame(self,value):
+    def getFrame(self,value):
         try:
             frame= self.frame_map[value]
         except:
             return None, -1
         if type(frame) is VideoFrame:
-            data = frame.get_frame(self.capturer)
+            data = frame.getFrame(self.capturer)
         else:
-            data = frame.get_frame()
+            data = frame.getFrame()
         return data, value
 
-    def delete_frame(self,value):
+    def deleteFrame(self,value):
         self.frame_map.pop(value)
         self.frame_count-=1
 
-    def save_map(self):
+    def saveMap(self):
         with open(self.map_path, "wb") as fp:   #Pickling
             pickle.dump(self.frame_map, fp)
         self.frame_map = None
 
-    def load_map(self):
+    def loadMap(self):
         with open(self.map_path, "rb") as fp:   #Pickling
             self.frame_map = pickle.load(fp)
         if os.path.isfile(self.map_path):
             os.remove(self.map_path)
         
 
-    def clear_data(self):
+    def clearData(self):
         if self.frame_map == None:
             return
         for element in self.frame_map:
@@ -161,7 +161,7 @@ class Videodata:
         return frames
 
 
-    def extract_frames(self, left,right,up,down, frame_start, frame_end):
+    def extractFrames(self, left,right,up,down, frame_start, frame_end):
         curr_obj = self.frame_map[frame_start]
         curr_type = type(curr_obj)
         curr_add_on = curr_obj.file_name if curr_type is StubFrame else self.capturer
@@ -197,7 +197,7 @@ class Videodata:
             self.frame_map.insert(index,stub_frame)
             index +=1
 
-    def add_frames(self, result, frame_start,frame_end):
+    def addFrames(self, result, frame_start,frame_end):
         frames_added,_,_,_ = result.shape
         file_id = uuid.uuid4().hex[:10].upper() + ".npy"
         stub_path = os.path.join(self.dir_path,file_id)
@@ -206,7 +206,7 @@ class Videodata:
         self.frame_count = self.frame_count + frames_added - (frame_end-frame_start)
         return result[1], frame_start+1
 
-    def save_video(self,filename,override):
+    def saveVideo(self,filename,override):
         path_to_save = filename
 
         if override:
@@ -215,7 +215,7 @@ class Videodata:
             path_to_save = os.path.join(self.dir_path,temporal_file)
         video = cv.VideoWriter(path_to_save,cv.VideoWriter_fourcc(*'mp4v'), self.fps, (self.width,self.height))
         for i in range(int(self.frame_count)):
-            frame , value = self.get_frame(i)
+            frame , value = self.getFrame(i)
             cv.cvtColor(frame,cv.COLOR_RGB2BGR, frame)
             if value>=0:
                 video.write(frame)
@@ -225,7 +225,7 @@ class Videodata:
         
 
     @staticmethod
-    def save_frames(path, frames):
+    def saveFrames(path, frames):
         np.save(path, frames)
         
 
