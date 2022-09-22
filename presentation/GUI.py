@@ -114,7 +114,7 @@ class ImageLabel(QWidget):
             selection= (0,self.w,0,self.h)
         else:
             p_s_i, p_i_d = self.getRectangle(self.point_one,self.point_two)
-            selection = (p_s_i.x(),p_i_d.x(),p_s_i.y(),p_i_d.y())
+            selection = (max(p_s_i.x(),0),min(p_i_d.x(),self.w),max(p_s_i.y(),0),min(p_i_d.y(),self.h))
         self.point_one = None
         self.point_two = None
         return selection
