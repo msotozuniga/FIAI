@@ -86,6 +86,7 @@ class ImageLabel(QWidget):
             self.timer.start(self.double_click_interval)
         
         self.point_one = event.pos()
+        self.point_two = None
         self.origin = self.point_one + self.canvas.pos()
         if not self.rubberBand:
             self.rubberBand = QRubberBand(QRubberBand.Rectangle, self)
