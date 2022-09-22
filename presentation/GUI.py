@@ -139,8 +139,7 @@ class Mainwindow(QMainWindow):
         self.file_name = None
         self.w =None
         self.setMinimumSize(720, 480)
-        avGeom = QDesktopWidget().availableGeometry()
-        self.setGeometry(avGeom)
+        self.showMaximized()
     
     def setController(self, controller):
         self.controller = controller
@@ -169,7 +168,6 @@ class Mainwindow(QMainWindow):
         main_layout = QHBoxLayout()
         self.createLayoutLeft(main_layout)
         self.createLayoutRight(main_layout)
-        #TODO continuar
         widget.setLayout(main_layout)
         self.setCentralWidget(widget)
 

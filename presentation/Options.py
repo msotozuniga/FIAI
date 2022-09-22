@@ -1,4 +1,4 @@
-from PySide2.QtWidgets import QWidget,QHBoxLayout,QVBoxLayout, QLabel,QComboBox, QSpinBox
+from PySide2.QtWidgets import QWidget,QHBoxLayout,QVBoxLayout, QLabel,QComboBox, QSpinBox, QSizePolicy
 
 class OptionChoice(QWidget):
     def __init__(self, label_text,dict):
