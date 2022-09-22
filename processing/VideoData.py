@@ -162,16 +162,15 @@ class Videodata:
 
 
     def extract_frames(self, left,right,up,down, frame_start, frame_end):
-        #TODO: agarrar el tipo del primer frame
         curr_obj = self.frame_map[frame_start]
         curr_type = type(curr_obj)
         curr_add_on = curr_obj.file_name if curr_type is StubFrame else self.capturer
-        curr_interval = [curr_obj.i_frame,None]
+        curr_interval = [curr_obj.i_frame,curr_obj.i_frame]
         frames_sets =[]
         pieces_sets = []
-        for i in range(frame_start,frame_end+1):
+        for i in range(frame_start+1,frame_end+1):
             element = self.frame_map[i]
-            if not element.equal(curr_obj):
+            if not element.equal(curr_obj) or element.i_frame > curr_obj.i_frame+1:
                 piece,frame, empty =curr_type.extract_frames(left, right, up, down, curr_interval[0],curr_interval[1],curr_add_on)
                 if not empty:
                     pieces_sets.append(piece)
@@ -222,19 +221,6 @@ class Videodata:
                 video.write(frame)
         video.release()
         print("Finaliza el guardado")
-        #TODO cambiar nombre si se estaba sobreescribiendo
-
-        
-        ''' 
-        # Write all the frames sequentially to the new video
-        for v in videos:
-            curr_v = cv2.VideoCapture(v)
-            while curr_v.isOpened():
-                r, frame = curr_v.read()    # Get return value and curr frame of curr video
-                if not r:
-                    break
-                video.write(frame)          # Write the frame
-        '''
           
         
 
