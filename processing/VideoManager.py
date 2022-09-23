@@ -89,7 +89,7 @@ class VideoManager:
             data (str,bool): (Nombre completo archivo, Sobreescribir el archivo)
         '''
         filename,override = data
-        self.video.save_video(filename,override)
+        self.video.saveVideo(filename,override)
 
     def clearCache(self):
         '''Solicita a VideoData que borre los datos no utilizados

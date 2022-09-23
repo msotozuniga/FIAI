@@ -206,7 +206,6 @@ class Videodata:
 
     def saveVideo(self,filename,override):
         path_to_save = filename
-
         if override:
             filename, file_extension = os.path.splitext(filename)
             temporal_file = "temp."+file_extension
