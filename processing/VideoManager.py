@@ -140,6 +140,8 @@ class VideoManager:
             array: Fotograma que corresponde al que se ha borrado
         '''
         self.video.deleteFrame(value)
+        if value == self.video.frame_count:
+            value -= 1
         return self.video.getFrame(value)
 
 
