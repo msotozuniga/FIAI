@@ -80,6 +80,7 @@ class Videodata:
         self.fps = None
         self.frame_count = None
         self.frame_map = []
+        self.stubs =[]
         self.width = None
         self.height = None
         self.dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),"temp")
@@ -135,13 +136,9 @@ class Videodata:
         
 
     def clearData(self):
-        if self.frame_map == None:
-            return
-        for element in self.frame_map:
-            if type(element) is StubFrame:
-                file = element.file_name
-                if os.path.isfile(file):
-                    os.remove(file)
+        for file in self.stubs:
+            if os.path.isfile(file):
+                os.remove(file)
         self.__init__()
                 
 
@@ -188,7 +185,7 @@ class Videodata:
         todas_frames = np.concatenate(frames_sets[:],axis=0)
         return todas_pieces,todas_frames
 
-    def insert_frames(self, stub_name,frames_added, l,r):
+    def insertFrames(self, stub_name,frames_added, l,r):
         for i in range(r-l):
             self.frame_map.pop(l)
         index = l
@@ -201,8 +198,9 @@ class Videodata:
         frames_added,_,_,_ = result.shape
         file_id = uuid.uuid4().hex[:10].upper() + ".npy"
         stub_path = os.path.join(self.dir_path,file_id)
-        self.save_frames(stub_path,result)
-        self.insert_frames(stub_path,frames_added,frame_start,frame_end)
+        self.stubs.append(stub_path)
+        self.saveFrames(stub_path,result)
+        self.insertFrames(stub_path,frames_added,frame_start,frame_end)
         self.frame_count = self.frame_count + frames_added - (frame_end-frame_start)
         return result[1], frame_start+1
 
