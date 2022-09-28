@@ -182,7 +182,7 @@ class Mainwindow(QMainWindow):
         self.model_option = OptionChoice("Modelo",settings.model_index)
         left_layout.addWidget(self.model_option)
 
-        self.device_option = OptionChoice("Dispositivo",settings.device_index) #TODO Buscar dispositivos
+        self.device_option = OptionChoice("Dispositivo",settings.device_index) 
         left_layout.addWidget(self.device_option)
 
         self.n_option = OptionNumber("Fotogramas intermedios")
