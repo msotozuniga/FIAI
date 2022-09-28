@@ -107,7 +107,7 @@ class VideoManager:
         '''
         model_id = data["model"]
         if model_id != self.model.id:
-            self.change_model(model_id)
+            self.changeModel(model_id)
         device = data["device"]
         if device != self.model.device_system:
             self.model.to_device(device)

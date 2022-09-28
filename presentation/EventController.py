@@ -34,6 +34,8 @@ class EventController():
         while True:
             func, params, to_gui = settings.process_queue.get()
             self.executeFunction(func,params,to_gui)
+
+    #TODO Sacar el to gui porque no se usa
         
 
         
