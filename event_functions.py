@@ -3,33 +3,33 @@ import processing.VideoManager as VM
 
 def closeProgram(window, manager, message):
     print("closing program with message " + message )
-    manager.clear_cache()
+    manager.clearCache()
 
 def saveVideo(window,manager,message):
-    manager.save_video(message)
+    manager.saveVideo(message)
 
 def interpolate(window,manager, data):
     data = manager.interpolate(data)
-    update_video_data = manager.get_video_data()
+    update_video_data = manager.getVideoData()
     window.setVideoData(update_video_data)
     responseFrame(window,data)
 
 
 def openVideo(window, manager,file_name):
-    manager.clear_cache()
-    data = manager.open_video(file_name)
+    manager.clearCache()
+    data = manager.openVideo(file_name)
     window.setVideoData(data)
     requestFrame(window,manager,0)
 
 def requestFrame(window, manager,value):
-    data=manager.get_frame(value)
+    data=manager.getFrame(value)
     window.setFrame(data)
 
 def responseFrame(window, data):
     window.setFrame(data)
 
 def deleteFrame(window,manager,value):
-    data = manager.delete_frame(value)
-    update_video_data = manager.get_video_data()
+    data = manager.deleteFrame(value)
+    update_video_data = manager.getVideoData()
     window.setVideoData(update_video_data)
     responseFrame(window,data)

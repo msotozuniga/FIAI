@@ -86,6 +86,7 @@ class ImageLabel(QWidget):
             self.timer.start(self.double_click_interval)
         
         self.point_one = event.pos()
+        self.point_two = None
         self.origin = self.point_one + self.canvas.pos()
         if not self.rubberBand:
             self.rubberBand = QRubberBand(QRubberBand.Rectangle, self)
@@ -113,7 +114,7 @@ class ImageLabel(QWidget):
             selection= (0,self.w,0,self.h)
         else:
             p_s_i, p_i_d = self.getRectangle(self.point_one,self.point_two)
-            selection = (p_s_i.x(),p_i_d.x(),p_s_i.y(),p_i_d.y())
+            selection = (max(p_s_i.x(),0),min(p_i_d.x(),self.w),max(p_s_i.y(),0),min(p_i_d.y(),self.h))
         self.point_one = None
         self.point_two = None
         return selection
@@ -139,8 +140,7 @@ class Mainwindow(QMainWindow):
         self.file_name = None
         self.w =None
         self.setMinimumSize(720, 480)
-        avGeom = QDesktopWidget().availableGeometry()
-        self.setGeometry(avGeom)
+        self.showMaximized()
     
     def setController(self, controller):
         self.controller = controller
@@ -169,7 +169,6 @@ class Mainwindow(QMainWindow):
         main_layout = QHBoxLayout()
         self.createLayoutLeft(main_layout)
         self.createLayoutRight(main_layout)
-        #TODO continuar
         widget.setLayout(main_layout)
         self.setCentralWidget(widget)
 
@@ -183,7 +182,7 @@ class Mainwindow(QMainWindow):
         self.model_option = OptionChoice("Modelo",settings.model_index)
         left_layout.addWidget(self.model_option)
 
-        self.device_option = OptionChoice("Dispositivo",settings.device_index) #TODO Buscar dispositivos
+        self.device_option = OptionChoice("Dispositivo",settings.device_index) 
         left_layout.addWidget(self.device_option)
 
         self.n_option = OptionNumber("Fotogramas intermedios")

@@ -1,8 +1,6 @@
 import queue
 
-
-
-def initialize_queue():
+def initializeQueue():
     global process_queue
     global model_index
     global device_index

@@ -14,13 +14,13 @@ class EventController():
         self.video_manager = manager
         self.window = window
 
-    def set_manager(self, video_manager):
+    def setManager(self, video_manager):
         self.video_manager = video_manager
 
-    def set_window(self, window):
+    def setWindow(self, window):
         self.window = window
 
-    def execute_function(self, function, args, to_gui):
+    def executeFunction(self, function, args, to_gui):
         if to_gui >0:
             function(self.window, args)
         elif to_gui < 0:
@@ -33,7 +33,9 @@ class EventController():
     def run(self):
         while True:
             func, params, to_gui = settings.process_queue.get()
-            self.execute_function(func,params,to_gui)
+            self.executeFunction(func,params,to_gui)
+
+    #TODO Sacar el to gui porque no se usa
         
 
         
